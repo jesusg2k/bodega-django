@@ -1,0 +1,25 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+    <div class="text-center">
+        <h1>Agregar Permiso</h1>
+
+        <form action="nuevopermiso/" method="POST">
+            {% csrf_token %}
+            <input type="text" name="permiso" placeholder="Escribe un permiso....">
+            <button> Guardar</button>
+        </form>
+    </div>
+{% endblock %}
+
+
+
+
+
+</form>
+
+
+
+</body>
+</html>
+

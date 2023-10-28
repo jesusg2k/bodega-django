@@ -1,0 +1,213 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+<h1>Mis Proyectos</h1>
+    {% if user.is_staff   %}
+        <a class="btn btn-primary" href="{% url 'form-crear-proyecto' %}">Crear proyecto</a>
+    {% endif %}
+    <br><br>
+    <table id="tabla-potenciada" class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Nombre de Proyecto</th>
+          <th scope="col">Descripción de Proyecto</th>
+          <th scope="col">S.M</th>
+          <th scope="col">Capacidad H/D</th>
+          <th scope="col">Tipos U.S</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Inicio - Fin</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+         <tbody>
+            {% for queue in data.lista_proyectos %}
+                <tr><td>{{ queue.id }}</td>
+                <td>{{ queue.nombre_proyecto }}</td>
+                <td>{{ queue.descripcion }}</td>
+                <td>{{ queue.scrum_master }}</td>
+                <td>{{ queue.capacidad_hora_diaria_equipo }} Hs Diarios - {{ queue.cantidad_integrantes_equipo }} Integrantes</td>
+                <td>
+                    {% autoescape on %}
+                        {{ queue.lista_us_text  | linebreaksbr }}
+                    {% endautoescape %}
+                </td>
+                <td>{{ queue.estado.descripcion }}</td>
+                <td>{{ queue.fecha_inicio|default_if_none:"NO INICIADO" }} - {{ queue.fecha_fin|default_if_none:"NO FINALIZADO" }}</td>
+                <td>
+                    {% if queue.estado.id == 1 %}
+
+                    {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                            {% if values.1 == True %}
+                                    <a href="{% url 'iniciar_proyecto_get' id=queue.id %}" class="btn btn-success btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                        <span class="text">Iniciar</span>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+                    {% endif %}
+
+
+
+
+                    {% if queue.estado.id == 2 %}
+                        {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                            {% if values.2 == True %}
+                                     <a href="{% url 'finalizar_proyecto_get' id=queue.id %}" class="btn btn-warning btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                        <span class="text">Finalizar</span>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% if queue.estado.id == 2 %}
+
+
+                        {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                             {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                            {% if values.3 == True %}
+                                        <a href="{% url 'cancelar_proyecto_get' id=queue.id %}" class="btn btn-danger btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                        <span class="text">Cancelar</span>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+
+
+                            {% endif %}
+                        {% endfor %}
+
+
+                    {% endif %}
+
+                    {% if queue.estado.id < 3 %}
+                         {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                            {% if values.4 == True %}
+                                    <a class="btn btn-primary" href="{% url 'proyectos-integrantes' id_proyecto=queue.id %}">Equipo</a>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                             {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                            {% if values.5 == True %}
+                                     <a class="btn btn-primary" href="{% url 'roles-proyecto' id_proyecto_id=queue.id %}">Roles</a></a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+
+
+                            {% endif %}
+                        {% endfor %}
+
+
+                        {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                             {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                            {% if values.9 == True %}
+                                     <a class="btn btn-primary" href="{% url 'proyectos-miembros' id_proyecto=queue.id %}">Miembros</a>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+
+
+                            {% endif %}
+                        {% endfor %}
+
+
+                    {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                             {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                            {% if values.13 == True %}
+                                     <a class="btn btn-primary" href="{% url 'product-backlog' id_proyecto=queue.id %}">Product Backlog</a></a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+
+
+                            {% endif %}
+                        {% endfor %}
+
+
+                    {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                             {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                            {% if values.14 == True %}
+                                     <a class="btn btn-primary" href="{% url 'tipos-user-story-proyecto' id_proyecto=queue.id %}">Tipos User Story</a>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+
+
+                        {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                             {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                            {% if values.15 == True %}
+                                     <a class="btn btn-primary" href="{% url 'sprints-proyecto' id_proyecto=queue.id %}">Sprints</a>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+
+
+                            {% endif %}
+                        {% endfor %}
+
+
+
+
+                    {% endif %}
+                {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                             {% for key,values in data.permisos.items %}
+                        {% if key == queue.id %}
+                            {% if values.15 == True %}
+                                     <a class="btn btn-primary" href="{% url 'burndown-proyecto' id_proyecto=queue.id %}">Burndown Chart</a>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+
+
+                            {% endif %}
+                        {% endfor %}
+                </td></tr>
+            {% endfor %}
+          </tbody>
+    </table>
+
+
+{% endblock %}

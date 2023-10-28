@@ -1,0 +1,144 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+
+<h2>Tablero Kanban: Sprint: {{ sprint.id }} - Proyecto N°: {{ proyecto.id }} - Tipo de User: {{ tipo_user_story.nombre }}</h2>
+    {% for key,value in tipos_storys_json.items %}
+        <a href="{% url 'ver-tablero-kanban' id_sprint=sprint.id nro_tipo_user=key %}" class="btn btn-primary btn-icon-split">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                            <span class="text">Ver Tablero Tipo US: {{ value.nombre }}</span>
+        </a>
+    {% endfor %}
+    <br>
+    <br>
+
+   <div class="row">
+    {% for key,value in estados_json.items %}
+            <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-md font-weight-bold text-primary text-uppercase mb-1">
+                                                {{ value.nombre }}</div>
+                                            <br>
+
+                                            {% for x in value.userstorys %}
+                                            <div class="card border-left-primary shadow h-100 py-2">
+                                                <div class="card-body">
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col mr-2">
+                                                            {% if x.us.finalizado == True %}
+                                                                <div class="text-small font-weight-bold  mb-0">
+                                                            {% else %}
+                                                                <div class="text-small font-weight-bold text-primary  mb-0">
+                                                            {% endif %}
+
+                                                                Cod: {{ x.us.id }} - Descripción: {{ x.us.descripcion }}
+                                                                <br>
+                                                                Us Point: {{ x.us.user_point }} - Buss. Value = {{ x.us.business_value }}
+                                                                Estado: {{ x.us.estado }} <br>
+                                                                {% if x.us.finalizado == True %}
+                                                                    FINALIZADO <br>
+                                                                {% else %}
+                                                                    PENDIENTE <br>
+                                                                {% endif %}
+                                                                Hs. Estimado Inicial: {{ x.us.estimacion_horas_inicial }} Hs.<br>
+                                                                Hs. Estimado Actual: {{ x.us.estimacion_horas }} Hs.<br>
+                                                                Usuario Asignado: {{ x.us.usuario_asignado|default_if_none:"No asignado" }}<br>
+                                                                Total Hs. Reg: {{ x.cant_horas_total_reg }} Hs<br>
+                                                                Hs. Reg Sprint: {{ x.cant_horas_sprint }} Hs<br>
+                                                                Cant. Registros: {{ x.cant_total_observaciones }} <br>
+
+                                                                {% if x.us.finalizado == False %}
+                                                                    {% if x.us.usuario_asignado == request.user%}
+                                                                    <a href="{% url 'registrar-actividad-us' id_user_story=x.us.id %}" class="btn btn-primary btn-icon-split">
+                                                                    <span class="icon text-white-50">
+                                                                        <i class="fas fa-sign"></i>
+                                                                    </span>
+                                                                    <span class="text">Registrar Actividad</span>
+                                                                    </a>
+
+                                                                        <br>
+                                                                        <br>
+                                                                          <a href="{% url 'actualizar-estado-us' id_user_story=x.us.id %}" class="btn btn-primary btn-icon-split">
+                                                                            <span class="icon text-white-50">
+                                                                                <i class="fas fa-sign"></i>
+                                                                            </span>
+                                                                            <span class="text">Actualizar Estado</span>
+                                                                        </a>
+                                                                    {% endif %}
+
+                                                                    {% if x.us.proyecto.scrum_master.username == request.user.username %}
+                                                                    <a href="{% url 'registrar-actividad-us' id_user_story=x.us.id %}" class="btn btn-primary btn-icon-split">
+                                                                    <span class="icon text-white-50">
+                                                                        <i class="fas fa-sign"></i>
+                                                                    </span>
+                                                                    <span class="text">Registrar Actividad</span>
+                                                                    </a>
+
+                                                                        <br>
+                                                                        <br>
+                                                                          <a href="{% url 'actualizar-estado-us' id_user_story=x.us.id %}" class="btn btn-primary btn-icon-split">
+                                                                            <span class="icon text-white-50">
+                                                                                <i class="fas fa-sign"></i>
+                                                                            </span>
+                                                                            <span class="text">Actualizar Estado</span>
+                                                                        </a>
+                                                                    {% endif %}
+
+
+
+                                                                <br>
+                                                                <br>
+                                                                       {% for key,values in data.permisos.items %}
+                                                                    {% if key == queue.id %}
+                                                                         {% for key,values in data.permisos.items %}
+                                                                    {% if key == queue.id %}
+                                                                        {% if values.28 == True %}
+                                                                                <a href="{% url 'actualizar-estado-us' id_user_story=x.us.id %}" class="btn btn-primary btn-icon-split">
+                                                                            <span class="icon text-white-50">
+                                                                                <i class="fas fa-sign"></i>
+                                                                            </span>
+                                                                            <span class="text">Actualizar Estado</span>
+                                                                        </a>
+                                                                            {% endif %}
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                         {% endif %}
+                                                                  {% endfor %}
+
+                                                                {% else %}
+                                                                    <a href="{% url 'registrar-actividad-us' id_user_story=x.us.id %}" class="btn btn-primary btn-icon-split">
+                                                                    <span class="icon text-white-50">
+                                                                        <i class="fas fa-sign"></i>
+                                                                    </span>
+                                                                    <span class="text">Ver Eventos</span>
+                                                                </a>
+                                                                <br>
+                                                                {% endif %}
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            {% endfor %}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+    {% endfor %}
+   </div>
+    <br>
+    <br>
+    <a class="btn btn-danger" href="{% url 'sprints-proyecto' id_proyecto=sprint.proyecto.id %}">Voler a Sprints del Proyecto N° {{ sprint.proyecto.id  }}</a>
+    <br>
+    <br>
+{% endblock %}

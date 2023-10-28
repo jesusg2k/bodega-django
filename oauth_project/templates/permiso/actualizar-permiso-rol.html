@@ -1,0 +1,76 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+    <script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+         {
+            "label": "ID Rol",
+            "tableView": true,
+            "key": "idRol",
+            "type": "textfield",
+            "input": true,
+             "disabled":true,
+            "defaultValue": {{ rolporproyecto.id }}
+        },
+        {
+            "label": "Nombre Rol",
+            "tableView": true,
+            "key": "nombreRol",
+            "type": "textfield",
+            "input": true,
+            "disabled":true,
+            "defaultValue": "{{ rolporproyecto.descripcion|escapejs }}"
+        },
+        {
+            "label": "Permisos",
+            "optionsLabelPosition": "right",
+            "tableView": false,
+            "values": {{ permisos_json|safe }},
+            "key": "permisos",
+            "type": "selectboxes",
+            "input": true,
+            "inputType": "checkbox",
+            "defaultValue": {{ defaultvalues|safe }},
+        },
+        {
+            "label": "JsonEquipo",
+            "tableView": true,
+            "calculateValue": "var json = JSON.stringify(data);\nconsole.log(json)\ndocument.getElementById('guardar_json_txt').value = json",
+            "key": "form",
+            "type": "hidden",
+            "disabled": true,
+            "input": true
+        },
+  ]
+}).then(function(form) {
+  form.on('submit', function(submission) {
+
+  });
+});
+      };
+    </script>
+    <div class="col-sm">
+        <h2>Actualizar Permisos del Rol N° {{ rolporproyecto.id }} del Proyecto {{ rolporproyecto.proyecto.id }}</h2>
+    <form id="formio" action="{% url 'actualizar_permisos_rol_post' %}" method="POST"></form>
+    <form class="user" action="{% url 'actualizar_permisos_rol_post' %}" method="post">
+        {% csrf_token %}
+        <div class="col-sm-12 mb-6 mb-sm-0">
+            <input id="guardar_json_txt" hidden="true"  type="text" name="data" class="form-control form-control-user"
+            placeholder="json">
+        </div>
+        <div class="d-flex justify-content-left mt-3 login_container">
+                <button type="submit" class="btn btn-success">Actualizar</button>
+        </div>
+        </form>
+    </div>
+
+<br>
+    <br>
+    <a class="btn btn-danger" href="{% url 'roles-proyecto' id_proyecto_id=rolporproyecto.proyecto_id %}">Volver a Roles del Proyecto</a>
+    <br>
+    <br>
+{% endblock %}
+
+

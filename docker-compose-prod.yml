@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  web:
+    restart: always
+    build:
+      context: .
+    command:  gunicorn --bind 0.0.0.0:8000 oauth_project.wsgi --workers=4
+    expose:
+      - "8000"
+    ports:
+      - "9000:8000"
+    depends_on:
+      - db
+    links:
+      - db:db
+    networks:
+      - backend
+    restart: on-failure
+  db:
+    restart: always
+    image: postgres:13
+    build: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: systemmanagerdb
+    ports:
+      - '5432:5432'
+    networks:
+      - backend
+  nginx:
+    build: nginx
+    restart: always
+    ports:
+      - "90:90"
+    expose:
+      - "90"
+    volumes:
+      - static_volume:/home/app/staticfiles/static
+    depends_on:
+      - db
+      - web
+    networks:
+      - backend
+    links:
+      - web
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  static_volume:
+

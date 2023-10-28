@@ -1,0 +1,11 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+
+    <h1 class="h1 mb-4 text-gray-800">¡Bienvenido al System Manager!</h1>
+    {% if not user.is_authenticated %}
+    <h5 class="h5 mb-4 text-gray-800">Lo invitamos a ingresar en nuestro sistema</h5>
+    <h5 class="h5 mb-4 text-gray-800">Si aún no tiene una cuenta, puede registrarse, en la opción 'Crearme una cuenta del menú'</h5>
+    {% endif %}
+
+
+{% endblock %}

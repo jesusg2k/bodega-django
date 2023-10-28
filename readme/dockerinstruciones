@@ -1,0 +1,14 @@
+dev
+docker-compose-dev.yml
+
+prod
+docker-compose-prod.yml
+
+
+test
+sudo docker-compose -f docker-compose-test.yml build
+sudo docker-compose -f docker-compose-test.yml up
+sudo docker-compose -f docker-compose-test.yml up -d
+sudo docker-compose -f docker-compose-test.yml down
+
+

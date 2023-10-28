@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context: .
+    command: pytest tests/test_db_exist.py
+    expose:
+      - "8000"
+    ports:
+      - "9000:8000"
+    depends_on:
+      - db
+    links:
+      - db:db
+    restart: always 
+  db:
+    image: postgres:13
+    build: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: systemmanagerdb
+    ports:
+      - '5432:5432'
+

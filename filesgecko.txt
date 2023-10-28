@@ -1,0 +1,10 @@
+/home/jesus/.local/share/Trash/files/virtual-env/bin/geckodriver
+/home/jesus/.local/share/Trash/files/geckodriver
+/home/jesus/Downloads/asd/geckodriver-v0.31.0-linux64/geckodriver
+/home/jesus/Downloads/tes/geckodriver-v0.31.0-linux64(2)/geckodriver
+/home/jesus/Downloads/geckodriver-v0.31.0-linux64/geckodriver
+/home/jesus/Downloads/geckodriver-v0.32.0-linux64/geckodriver
+/home/jesus/proyecto/virtual-env/bin/geckodriver
+/home/jesus/proyecto/virtual-env/WebDriverManager/gecko/v0.29.0/geckodriver-v0.29.0-linux64/geckodriver
+/usr/share/gnome/WebDriverManager/gecko/v0.29.0/geckodriver-v0.29.0-linux64/geckodriver
+/usr/local/bin/geckodriver

@@ -1,0 +1,79 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+    <script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+        {
+            "label": "Nombre de Tipo User Story",
+            "tableView": true,
+            "key": "nombre_tipo_story",
+            "type": "textfield",
+            "input": true,
+            "validate": {
+                        "required": true,
+                        "unique": true
+            },
+            "errors": {
+                "required": "Nombre del Tipo U.S es un campo obligatorio."
+            },
+        },
+        {
+            "label": "Estados",
+            "reorder": false,
+            "addAnotherPosition": "bottom",
+            "layoutFixed": false,
+            "enableRowGroups": false,
+            "initEmpty": false,
+            "tableView": false,
+            "defaultValue": [],
+            "validate": {
+                "required": true,
+                "custom": "datagrid = data.dataGrid\nvar n = datagrid.length\nconsole.log('n -> '+n)\nobjects = {};\nvalido = true\nmsg = \"\"\n\ndo_exist = false\ndoing_exist = false\ndone_exist = false\n\n\nfor(let i=0; i<n; i++){\n  console.log(\"i: \"+i+\"/\"+n)\n  for(const key in datagrid[i]){\n    if(valido===false) {\n        console.log('se detiene el for -> break por invalido')\n        break;\n    }\n    console.log(\"key: \"+key+\" of [i]-> \"+i)\n    console.log('datagrid[i][key]->'+datagrid[i][key])\n    if(datagrid[i][key]===\"\"){\n        valido = false\n        msg = 'Error: Hay un elemento vacio'\n        console.log('inválido, hay un elemento vacío')\n        break;\n    }\n    if(!key.includes('unique')){ continue; }\n        if((objects[datagrid[i][key]]) != undefined){\n          console.log('este se repite->'+datagrid[i][key])\n          valido = false\n          msg = \"Hay elementos repetidos\"\n          console.log('se detiene porque se repiten valores')\n          break;\n        }\n    console.log('se asigna valor a datagrid['+i+']['+key+']->'+1)\n  \tobjects[datagrid[i][key]] = 1\n    if(datagrid[i][key]===\"done\") {done_exist=true}\n    if(datagrid[i][key]===\"do\") {do_exist=true}\n    if(datagrid[i][key]===\"doing\") {doing_exist=true}\n    }\n}\n\nif(!do_exist || !doing_exist || !done_exist) {\n        valido = false\n        msg = 'Los campos do, doing y done son obligatorios'\n}\n\nif(valido===true){\n    valid = true;\n}else{\n    valid = msg\n}console.log('termino en -> '+valid)"
+            },
+            "key": "dataGrid",
+            "type": "datagrid",
+            "input": true,
+            "components": [
+                {
+                    "label": "Estados",
+                    "tableView": true,
+                    "validate": {
+                        "required": true,
+                    },
+                    "key": "estado-unique",
+                    "type": "textfield",
+                    "input": true
+                },
+            ],
+        },
+
+        {
+                    "label": "+ Crear Tipo User Story",
+                    "action": "event",
+                    "event": "evento-enviar-form",
+                    "showValidations": true,
+                    "disableOnInvalid": true,
+                    "tableView": false,
+                    "key": "submit",
+                    "type": "button",
+                    "input": true
+        }
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'crear_tipo_user_story' %}";
+};
+    </script>
+    <div class="col-sm">
+        <h1>Crear Tipo User Story</h1>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+{% endblock %}

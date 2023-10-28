@@ -1,0 +1,70 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+    <script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+         {
+            "label": "Código",
+            "tableView": true,
+            "disabled": true,
+            "key": "id",
+            "type": "textfield",
+            "input": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Cod es un campo obligatorio."
+            },
+            "defaultValue": {{ categoria.id }}
+        },
+         {
+            "label": "Nombre",
+            "tableView": true,
+            "key": "nombre",
+            "type": "textfield",
+            "input": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Nombre es un campo obligatorio."
+            },
+            "defaultValue": '{{ categoria.nombre }}'
+        },
+          {
+            "label": "+ Actualizar Categoria",
+            "action": "event",
+            "event": "evento-enviar-form",
+            "showValidations": true,
+            "disableOnInvalid": true,
+            "tableView": false,
+            "key": "submit",
+            "type": "button",
+            "input": true
+        }
+
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'actualizar_categoria_post' %}";
+};
+    </script>
+    <div class="col-sm">
+        <h2>Modificar categoria</h2>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+    <br>
+    <br>
+    <a class="btn btn-danger" href="/categorias">Volver a Lista de Categorias</a>
+    <br>
+    <br>
+{% endblock %}

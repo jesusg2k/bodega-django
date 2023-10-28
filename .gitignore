@@ -1,0 +1,7 @@
+/.pytest_cache/
+.idea/
+*.pyc
+/virtual-env/
+/tests/.pytest_cache/
+/oauth_app/__pycache__/
+/oauth_project/__pycache__/

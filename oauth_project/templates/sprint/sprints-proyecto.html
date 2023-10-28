@@ -1,0 +1,228 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+<h1>Lista de Sprints Proyecto: {{ proyecto.id }} - {{ proyecto.nombre_proyecto }}</h1>
+
+        <a class="btn btn-primary" href="{% url 'agregar-sprint-proyecto' id_proyecto=proyecto.id %}">Crear Sprint</a>
+
+    <br><br>
+    <table id="tabla-potenciada" class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Días Duración</th>
+          <th scope="col">Descripcion</th>
+          <th scope="col">Equipo</th>
+          <th scope="col">Capacidad</th>
+          <th scope="col">Total Hs Estimadas</th>
+          <th scope="col">Días estimados</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Inicio - Fin</th>
+          <th scope="col">Tipos U.S</th>
+          <th scope="col">Proyecto ID</th>
+          <th scope="col">Acciones</th>
+      </thead>
+         <tbody>
+            {% for queue in sprints %}
+                <tr>
+                    <td>{{ queue.id }}</td>
+
+                    <td>{{ queue.cant_dias_duracion }} Días</td>
+                    <td>{{ queue.descripcion }}</td>
+                    <td>{{ queue.lista_equipo_text }}</td>
+                    <td>{{ queue.carga_horas_diarias_equipo }} Horas/Día</td>
+                    <td>{{ queue.horas_total_estimadas_us.cant_horas }} Hs de Trabajo <br> en {{ queue.horas_total_estimadas_us.cant_us }} US</td>
+                    {% if  queue.cant_dias_estimados == -1 %}
+                        <td>------</td>
+                    {% else %}
+                        <td>{{ queue.cant_dias_estimados }} Días estimados para finalizar</td>
+                    {% endif %}
+                    <td>{{ queue.estado.descripcion }}</td>
+                    <td>{{ queue.fecha_inicio|default_if_none:"NO INICIADO" }} - {{ queue.fecha_fin|default_if_none:"NO FINALIZADO" }}</td>
+                    <td>{{ queue.tipo_user_story_text | linebreaksbr }}
+                    </td>
+                    <td>{{ queue.proyecto.id }}</td>
+                    <td>
+                        {% if queue.estado.id == 1 %}
+                            {% for key,values in permisos.items %}
+                                {% if key == queue.proyecto.id %}
+                                    {% if values.18 == True %}
+                                        {% if exists_sprint_activo == False %}
+                                            <a href="{% url 'iniciar_sprint_get' id=queue.id id_proyecto=queue.proyecto.id %}" class="btn btn-success btn-icon-split">
+                                                    <span class="icon text-white-50">
+                                                        <i class="fas fa-check"></i>
+                                                    </span>
+                                                    <span class="text">Iniciar</span>
+                                            </a>
+                                            </br>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+                    {% if queue.estado.id == 2 %}
+                        {% for key,values in permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                            {% if values.19 == True %}
+                                     <a href="{% url 'finalizar_sprint_get' id=queue.id id_proyecto=queue.proyecto.id %}" class="btn btn-warning btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                        <span class="text">Finalizar</span>
+                                    </a>
+                                </br>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if queue.estado.id == 2 %}
+                        {% for key,values in permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                            {% if values.20 == True %}
+                                     <a href="{% url 'cancelar_sprint_get' id=queue.id id_proyecto=queue.proyecto.id %}" class="btn btn-danger btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                        <span class="text">Cancelar</span>
+                                    </a>
+                                </br>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+
+                    {% if queue.estado.id == 1 %}
+                         {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                             {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                            {% if values.25 == True %}
+					             <a href="{% url 'modificar-sprint-default' id_sprint=queue.id id_proyecto=queue.proyecto.id %}" class="btn btn-info btn-icon-split">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                            <span class="text">Modificar</span>
+                                  </a>
+                                </br>
+                            {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                                        {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                             {% for key,values in data.permisos.items %}
+                                {% if key == queue.proyecto.id %}
+                                    {% if values.29 == True %}
+                                        <a href="{% url 'asignacion-us-usuario-sprint' id_proyecto=queue.proyecto.id id_sprint=queue.id %}" class="btn btn-primary btn-icon-split">
+                                                    <span class="icon text-white-50">
+                                                        <i class="fas fa-check"></i>
+                                                    </span>
+                                                    <span class="text">Sprint Backlog</span>
+                                        </a>
+                                        </br>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                             {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                            {% if values.21 == True %}
+					            <a href="{% url 'ver-tablero-kanban' id_sprint=queue.id nro_tipo_user=0 %}" class="btn btn-primary btn-icon-split">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                            <span class="text">Ver Tablero Kanban</span>
+                                </a>
+                                </br>
+                            {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+
+
+                     {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                             {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                            {% if values.24 == True %}
+					             <a href="{% url 'view_equipo_sprint' id_sprint=queue.id %}" class="btn btn-primary btn-icon-split">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                            <span class="text">Ver Equipo</span>
+                                </a>
+                                </br>
+                            {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+
+
+
+{% comment %}
+                    {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                     {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                            {% if values.23 == True %}
+					                <a href="{% url 'sprint-backlog' id_sprint=queue.id %}" class="btn btn-primary btn-icon-split">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                            <span class="text">Sprint Backlog</span>
+                                    </a>
+                                </br>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                            {% endif %}
+                        {% endfor %}{% endcomment %}
+
+                    {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                     {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                            {% if values.26 == True %}
+					                <a href="{% url 'informe-sprint-actual' id_sprint=queue.id %}" class="btn btn-primary btn-icon-split">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                            <span class="text">Informe Actual</span>
+                                    </a>
+                                </br>
+                                {% if queue.estado.descripcion == 'FINALIZADO'  or queue.estado.descripcion == 'CANCELADO' %}
+                                    <a href="{% url 'informe-sprint-historico' id_sprint=queue.id %}" class="btn btn-primary btn-icon-split">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                            <span class="text">Informe Historico</span>
+                                    </a>
+                                {% endif %}
+                                </br>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+
+                    </td>
+                </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+
+    <a class="btn btn-danger" href="/proyectos">Volver a Proyectos</a></a>
+    <br>
+    <br>
+{% endblock %}

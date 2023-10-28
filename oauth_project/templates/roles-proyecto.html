@@ -1,0 +1,36 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+<h1>Lista de Roles del proyecto {{ proyecto.nombre_proyecto }}</h1>
+    <a class="btn btn-primary" href="{% url 'form-crear-rol' id_proyecto_id=id_proyecto_id %}">Crear rol</a>
+    <a class="btn btn-primary" href="{% url 'form-importar-rol' id_proyecto_id=id_proyecto_id %}">Importar rol</a>
+    <br><br>
+    <table id="tabla-potenciada" class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Descripción Rol</th>
+          <th scope="col">Acciones</th>
+      </thead>
+         <tbody>
+            {% for queue in rolesporproyecto %}
+                <tr>
+                    <td>{{ queue.id }}</td>
+                    <td>{{ queue.descripcion }}</td>
+                    <td>
+                        <a href="{% url 'form-modificar-rol' id=queue.id id_proyecto_id=id_proyecto_id %}" class="btn btn-info btn-icon-split">
+                                    <span class="text">Modificar Rol</span>
+                        </a>
+                        <a href="{% url 'form-actualizar-roles-proyecto' id=queue.id %}" class="btn btn-info btn-icon-split">
+                                    <span class="text">Permisos</span>
+                    </a>
+                    </td>
+                </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+
+    <br>
+    <a class="btn btn-danger" href="/proyectos">Volver a Proyectos</a></a>
+    <br>
+    <br>
+{% endblock %}

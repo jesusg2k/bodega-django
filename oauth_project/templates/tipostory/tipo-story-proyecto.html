@@ -1,0 +1,29 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+<h1>Tipos de User Story del Proyecto: {{ proyecto.id }} - {{ proyecto.nombre_proyecto }}</h1>
+    <a class="btn btn-primary" href="{% url 'form-importar-tipo-us' id_proyecto_id=id_proyecto_id %}">Importar Tipo de User Story</a>
+    <br><br>
+    <table id="tabla-potenciada" class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Descripcion</th>
+          <th scope="col">Estados</th>
+      </thead>
+         <tbody>
+            {% for story_json in tipos_story %}
+                <tr>
+                    <td>{{ story_json.id }}</td>
+                    <td>{{ story_json.nombre }}</td>
+                    <td>{{ story_json.estados    }}</td>
+                </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+
+    <a class="btn btn-danger" href="/proyectos">Volver a Proyectos</a></a>
+    <br>
+    <br>
+
+
+{% endblock %}

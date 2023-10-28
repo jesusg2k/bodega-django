@@ -1,0 +1,37 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+<h1>Lista de Miembros del Proyecto: {{ proyecto.id }} - {{ proyecto.nombre_proyecto }}</h1>
+    <a class="btn btn-primary" href="{% url 'agregar-miembro-proyecto' id_proyecto=proyecto.id %}">Agregar Miembro</a>
+    <br><br>
+    <table id="tabla-potenciada" class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Usuario</th>
+          <th scope="col">Rol</th>
+          <th scope="col">Acciones</th>
+      </thead>
+         <tbody>
+            {% for queue in miembrosproyecto %}
+                <tr>
+                    <td>{{ queue.id }}</td>
+                    <td>{{ queue.user.username }}</td>
+                    <td>{{ queue.rol.descripcion }}</td>
+                    <td>
+                        <a href="{% url 'form-modificar-miembro-proyecto' id_miembro=queue.id id_proyecto=proyecto.id %}" class="btn btn-info btn-icon-split">
+                                    <span class="text">Modificar Miembro</span>
+                        </a>
+                        <a href="{% url 'eliminar_miembro_proyecto' id_miembro=queue.id id_proyecto=proyecto.id %}" class="btn btn-info btn-icon-split">
+                                    <span class="text">Eliminar</span>
+                    </a>
+                    </td>
+                </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+
+    <a class="btn btn-danger" href="/proyectos">Volver a Proyectos</a></a>
+    <br>
+    <br>
+
+{% endblock %}

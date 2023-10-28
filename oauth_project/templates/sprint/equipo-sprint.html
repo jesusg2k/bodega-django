@@ -1,0 +1,57 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+<h2>Lista de Integrantes del Sprint: {{ sprint.id }} - {{ sprint.descripcion }}</h2>
+
+       {% for key,values in data.permisos.items %}
+                        {% if key == sprint.proyecto.id %}
+                            {% if values.22 == True %}
+                                       <a class="btn btn-primary" href="{% url 'agregar-integrante-sprint' id_sprint=sprint.id %}">Agregar Integrante</a>
+                                    </a>
+                                {% endif %}
+                        {% endif %}
+       {% endfor %}
+
+
+    <br><br>
+    <table id="tabla-potenciada" class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Usuario</th>
+          <th scope="col">Cantidad Horas</th>
+          <th scope="col">Acciones</th>
+      </thead>
+        <tbody>
+            {% for equipo_json in equipos %}
+                <tr>
+                    <td>{{ equipo_json.id }}</td>
+                    <td>{{ equipo_json.nombre }}</td>
+                    <td>{{ equipo_json.cant_horas }}</td>
+                    <td>
+
+
+                             {% for key,values in data.permisos.items %}
+                        {% if key == sprint.proyecto.id %}
+                            {% if values.27 == True %}
+                                       <a href="{% url 'eliminar_integrante_sprint_post' id_sprint=sprint.id id_user=equipo_json.id %}" class="btn btn-danger btn-icon-split">
+                                    <span class="text">Eliminar</span>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+
+                    </td>
+                </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+
+    <br>
+    <br>
+    <a class="btn btn-danger" href="{% url 'sprints-proyecto' id_proyecto=sprint.proyecto.id %}">Voler a Sprints del Proyecto N° {{ sprint.proyecto.id  }}</a>
+    <br>
+    <br>
+
+
+{% endblock %}

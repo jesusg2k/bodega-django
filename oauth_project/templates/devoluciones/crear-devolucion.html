@@ -1,0 +1,138 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+    <script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+                        {
+                    "label": "Cliente",
+                    "widget": "choicesjs",
+                    "tableView": true,
+                    "validate": {
+                        "required": true
+                    },
+                    "dataSrc": "url",
+                    "data": {
+                        "url": "http://localhost:8000/api/clientes/",
+                        "headers": [
+                            {
+                                "key": "",
+                                "value": ""
+                            }
+                        ]
+                    },
+                    "valueProperty": "id",
+                    "dataType": "Object",
+                    "template": '{% verbatim %} {{item.id}} - {{ item.nombre }} - {{ item.documento }} {% endverbatim %}',
+                    "key": "cliente",
+                    "defaultValue": "",
+                    "type": "select",
+                    "input": true
+                },
+          {
+            "label": "Motivo devolución",
+            "tableView": true,
+            "key": "motivo",
+            "type": "textfield",
+            "input": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Motivo es un campo obligatorio."
+            },
+        },
+         {
+            "label": "Data Grid",
+            "reorder": false,
+            "layoutFixed": true,
+            "disableAddingRemovingRows": true,
+            "enableRowGroups": false,
+            "initEmpty": false,
+            "tableView": true,
+            "defaultValue": [
+                {
+                    "producto": "",
+                    "cantidad": "",
+                    "especial": false
+                }
+            ],
+            "key": "detalles_devolucion",
+            "type": "datagrid",
+            "input": true,
+            "validate": {
+                "minLength": "1"
+            },
+            "components": [
+                {
+                    "label": "Producto",
+                    "widget": "choicesjs",
+                    "tableView": true,
+                    "validate": {
+                        "required": true
+                    },
+                    "dataSrc": "url",
+                    "data": {
+                        "url": "http://localhost:8000/api/productos-activos/",
+                        "headers": [
+                            {
+                                "key": "",
+                                "value": ""
+                            }
+                        ]
+                    },
+                    "valueProperty": "id",
+                    "dataType": "Object",
+                    "template": '{% verbatim %} {{item.id}} - {{ item.descripcion }} - Cant. {{ item.cantidad_stock  }}{% endverbatim %}',
+                    "key": "producto",
+                    "type": "select",
+                    "input": true
+                },
+                {
+                    "label": "Cantidad",
+                    "applyMaskOn": "change",
+                    "tableView": true,
+                    "validate": {
+                        "required": true
+                    },
+                    "key": "cantidad",
+                    "type": "textfield",
+                    "input": true
+                }
+            ]
+        },
+          {
+            "label": "+ Registrar venta",
+            "action": "event",
+            "event": "evento-enviar-form",
+            "showValidations": true,
+            "disableOnInvalid": true,
+            "tableView": false,
+            "key": "submit",
+            "type": "button",
+            "input": true
+        }
+
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'crear_venta_post' %}";
+};
+    </script>
+    <div class="col-sm">
+        <h2>Crear nueva Venta</h2>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+    <br>
+    <br>
+    <a class="btn btn-danger" href="/roles-sistema">Volver a Lista de Usuarios</a>
+    <br>
+    <br>
+{% endblock %}

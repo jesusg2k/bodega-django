@@ -1,0 +1,25 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+    <div class="text-center">
+        <h1>Nuevo Proyecto</h1>
+
+        <form action="/crearProyecto/" method="POST"> {% csrf_token %} <!-- hacia que url va a enviar los datos -->
+            <p>Nombre Proyecto: <input type="text" name="nombre_proyecto"/></p>
+            <p>Descripciòn: <input type="text" name="descripcion"/></p>
+        <input type="submit" value="Crear Proyecto">
+    </form>
+    </div>
+{% endblock %}
+
+
+
+
+
+</form>
+
+
+
+</body>
+</html>
+

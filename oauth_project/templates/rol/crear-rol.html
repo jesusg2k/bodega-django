@@ -1,0 +1,63 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+    <script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+        {
+            "label": "Descripción de Rol",
+            "tableView": true,
+            "key": "descripcion_rol",
+            "type": "textfield",
+            "input": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Descripción de Rol es un campo obligatorio."
+            },
+        },
+        {
+            "label": "Proyecto ID: ",
+            "defaultValue": "{{ id_proyecto_id }}",
+            "disabled": true,
+            "key": "id_proyecto",
+            "type": "textfield",
+            "input": true,
+            "validate": {
+                "required": true
+            },
+        },
+          {
+            "label": "+ Crear Rol",
+            "action": "event",
+            "event": "evento-enviar-form",
+            "showValidations": true,
+            "disableOnInvalid": true,
+            "tableView": false,
+            "key": "submit",
+            "type": "button",
+            "input": true
+        }
+
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'crear_rol_post' %}";
+};
+    </script>
+    <div class="col-sm">
+        <h2>Crear nuevo Rol en Proyecto N° {{ id_proyecto_id }}</h2>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+    <br>
+    <br>
+    <a class="btn btn-danger" href="{% url 'roles-proyecto' id_proyecto_id=proyecto_id %}">Volver a Roles del Proyecto</a>
+{% endblock %}

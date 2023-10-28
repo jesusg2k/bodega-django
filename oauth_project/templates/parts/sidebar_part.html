@@ -1,0 +1,104 @@
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            {% if user.is_authenticated %}
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-gala"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">System Manager <sup></sup></div>
+            </a>
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+                <!-- Heading -->
+            <br><div class="sidebar-heading">
+                Menú del sistema
+            </div>
+
+            <!-- Nav Item - Dashboard -->
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+
+
+
+                {% if request.user.is_staff %}
+                <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item {% if collapse == "components" %}active{% endif %}">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Administrador</span>
+                </a>
+                <div id="collapseTwo" class="collapse {% if collapse == "components" %}show{% endif %}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Solo administrador</h6>
+                        <a class="collapse-item {% if filename == "cards" %}active{% endif %}" href="/permisos">Lista de Permisos</a>
+                        <a class="collapse-item {% if filename == "cards" %}active{% endif %}" href="/clientes">Lista de Clientes</a>
+                        <a class="collapse-item {% if filename == "cards" %}active{% endif %}" href="/productos">Lista de Productos</a>
+                        <a class="collapse-item {% if filename == "cards" %}active{% endif %}" href="/ventas">Lista de Ventas</a>
+                        <a class="collapse-item {% if filename == "cards" %}active{% endif %}" href="/devoluciones">Lista de Devoluciones</a>
+                        <a class="collapse-item {% if filename == "cards" %}active{% endif %}" href="/roles-sistema">Roles Sistema</a>
+                        <a class="collapse-item {% if filename == "cards" %}active{% endif %}" href="/usuarios">Usuarios</a>
+                        <a class="collapse-item {% if filename == "cards" %}active{% endif %}" href="/categorias">Categorias</a>
+                        <a class="collapse-item {% if filename == "cards" %}active{% endif %}" href="/tipospagos">Tipos de Pago</a>
+                    </div>
+                </div>
+            </li>
+
+                {% endif %}
+
+
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+            {% else %}
+                <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-gala"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">System Manager <sup></sup></div>
+            </a>
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Inicio de Sesión
+            </div>
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item {% if filename == "proyectos" %}active{% endif %}">
+                <a class="nav-link" href="/login">
+                    <i class="fas fa-fw fa-sign-in-alt"></i>
+                    <span>Iniciar Sesión</span></a>
+            </li>
+            <li class="nav-item {% if filename == "proyectos" %}active{% endif %}">
+                <a class="nav-link" href="/register">
+                    <i class="fas fa-sign"></i>
+                    <span>Crearme una cuenta</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+            {% endif %}
+        </ul>
+        <!-- End of Sidebar -->

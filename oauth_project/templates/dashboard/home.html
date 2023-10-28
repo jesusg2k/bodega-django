@@ -1,0 +1,27 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+    <div class="text-center">
+        <h2>Home</h2>
+        {% if user.is_authenticated %}
+            <p>Hola {{ user.first_name }}!</p>
+        <p>Tu usuario : {{ user }}</p>
+        <a class="btn btn-dark" href="{% url 'socialaccount_connections' %}">Configuracion</a>
+        {% endif %}
+        {% if user.is_staff %}
+            <p>Eres el Administrador del sistema</p>
+            <a class="btn btn-dark" href="{% url 'crear_proyecto' %}">Crear Proyectos</a>
+            <a class="btn btn-dark" href="{% url 'socialaccount_connections' %}">Ver Proyectos</a>
+            <a class="btn btn-dark" href="{% url 'permiso' %}">Ver Permisos</a>
+            <a class="btn btn-dark" href="{% url 'crear_permiso' %}">Crear Permisos</a>
+            <a class="btn btn-dark" href="{% url 'view_users' %}">Ver Usuarios</a>
+            <a class="btn btn-dark" href="{% url 'socialaccount_connections' %}">Ver Roles</a>
+        {% endif %}
+    </div>
+{% endblock %}
+
+
+</div>
+
+
+

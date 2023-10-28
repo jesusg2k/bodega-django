@@ -1,0 +1,73 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+<script type="text/javascript">
+    window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+        {
+            "label": "Usuario",
+            "tableView": true,
+            "key": "miembro",
+            "type": "textfield",
+            "input": true,
+            "validate": {
+                "required": true
+            },
+            "disabled": true,
+            "defaultValue":{{ id_miembro }}
+        },
+        {
+            "label": "Rol del Proyecto",
+            "widget": "choicesjs",
+            "tableView": true,
+            "data": {
+                "values": {{ roles_proyecto_json|safe }}
+            },
+            "key": "rol",
+            "type": "select",
+            "input": true,
+            "validate": {
+                "required": true
+            },
+        },
+        {
+            "label": "JsonMiembro",
+            "tableView": true,
+            "calculateValue": "var json = JSON.stringify(data);\nconsole.log(json)\ndocument.getElementById('guardar_json_txt').value = json",
+            "key": "form",
+            "type": "hidden",
+            "disabled": true,
+            "input": true
+        },
+
+  ]
+}).then(function(form) {
+
+  form.on('submit', function(submission) {
+
+  });
+});
+
+    console.log("FORM IO DESPLEGADO")
+
+};
+
+    </script>
+    <div class="col-sm">
+        <h1> Modificar Miembro en proyecto {{ proyecto.nombre_proyecto }}</h1>
+    <form id="formio" action="{% url 'modificar_miembro_proyecto_post' id_miembro=id_miembro id_proyecto=proyecto.id %}" method="POST"></form>
+    <form class="user" action="{% url 'modificar_miembro_proyecto_post' id_miembro=id_miembro id_proyecto=proyecto.id %}" method="post">
+        {% csrf_token %}
+        <div class="col-sm-12 mb-6 mb-sm-0">
+            <input id="guardar_json_txt" hidden="true"  type="text" name="data" class="form-control form-control-user"
+            placeholder="json">
+        </div>
+        <div class="d-flex justify-content-left mt-3 login_container">
+                <button type="submit" class="btn btn-success">Modificar Miembro</button>
+        </div>
+        </form>
+    </div>
+    <br><br>
+    <a class="btn btn-danger" href="{% url 'proyectos-miembros' id_proyecto=proyecto.id %}">Voler a Miembros del Proyecto</a>
+{% endblock %}

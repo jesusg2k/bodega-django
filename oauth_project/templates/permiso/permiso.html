@@ -1,0 +1,89 @@
+{% extends 'account/base.html' %}
+{% block content %}
+    <div class="text-center">
+
+<h1>Permisos CRUD</h1>
+
+<form action="nuevopermiso/" method="POST">
+        <table>
+        <tr><th>ID</th><th>Descripcion</th>
+        {% for queue in lista_permisos %}
+            {% if not queue.orderDate %}
+                <tr><td>{{ queue.id }}</td><td>{{ queue.descripcion }}</td></tr>
+            {% endif %}
+        {% endfor %}
+        </table>
+
+        <table id="tabla-potenciada" class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Descripcion</th>
+            </tr>
+          </thead>
+             <tbody>
+                {% for queue in lista_permisos %}
+                {% if not queue.orderDate %}
+                    <tr><td>{{ queue.id }}</td><td>{{ queue.descripcion }}</td></tr>
+                {% endif %}
+                {% endfor %}
+              </tbody>
+        </table>
+
+        {% csrf_token %}
+        <input type="text" name="permiso" placeholder="Escribe un permiso....">
+        <button> Guardar</button>
+    </form>
+    </div>
+{% endblock %}
+
+
+{% extends 'account/base.html' %}
+{% block content %}
+    <div class="text-center">
+
+<h1>Mis Proyectos</h1>
+    <a class="btn btn-primary" href="/misproyectos/crear-proyecto">Crear proyecto</a>
+    <br><br>
+    <table id="tabla-potenciada" class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Nombre de Proyecto</th>
+          <th scope="col">Descripción de Proyecto</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Roles Disponibles</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+         <tbody>
+            {% for queue in lista_proyectos %}
+                <tr><td>{{ queue.id }}</td>
+                <td>{{ queue.nombre_proyecto }}</td>
+                <td>{{ queue.descripcion }}</td>
+                <td>{{ queue.estado.descripcion }}</td>
+                <td>{{ queue.rolesporproyecto_set }}</td>
+                <td>
+                    {% if queue.estado.id == 1 %}
+                    <a class="btn btn-primary" href="/misproyectos/iniciar-proyecto/?id={{queue.id}}">Iniciar</a>
+                    {% endif %}
+                    {% if queue.estado.id == 2 %}
+                    <a class="btn btn-primary" href="/misproyectos/finalizar-proyecto/?id={{queue.id}}">Finalizar</a>
+                    {% endif %}
+                    {% if queue.estado.id == 3 %}
+                    <a class="btn btn-primary" href="/misproyectos/cancelar-proyecto/?id={{queue.id}}">Cancelar</a>
+                    {% endif %}
+                    {% if queue.estado.id < 3 %}
+                    <a class="btn btn-primary" href="/misproyectos/asignar-proyecto-miembros/?id={{queue.id}}">Asignar Miembros</a>
+                    {% endif %}
+                </td></tr>
+            {% endfor %}
+          </tbody>
+    </table>
+</div>
+{% endblock %}
+
+
+
+
+

@@ -1,0 +1,16 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+    <div class="text-center">
+
+        <form action="listausuarios/" method="POST">
+            {% csrf_token %}
+            <h1>Lista de Usuarios del Sistema</h1>
+        <ul class="user-list">
+            {% for user in lista_usuarios %}
+                {{ user }}<br>
+            {% endfor %}
+        </ul>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+<script type="text/javascript">
+    window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+        {
+            "label": "Cant. Horas diarias",
+            "tableView": true,
+            "key": "horas",
+            "type": "number",
+            "input": true,
+            "validate": {
+                "min": 1,
+                "max": 8,
+                "required":true
+            },
+        },
+        {
+            "label": "JsonMiembro",
+            "tableView": true,
+            "calculateValue": "var json = JSON.stringify(data);\nconsole.log(json)\ndocument.getElementById('guardar_json_txt').value = json",
+            "key": "form",
+            "type": "hidden",
+            "disabled": true,
+            "input": true
+        },
+        {
+            "label": "+ Modificar Integrante",
+            "action": "event",
+            "event": "evento-enviar-form",
+            "showValidations": true,
+            "disableOnInvalid": true,
+            "tableView": false,
+            "key": "submit",
+            "type": "button",
+            "input": true
+        }
+
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'modificar_integrante_proyecto_post' id_integrante=id_integrante id_proyecto=id_proyecto %}";
+};
+    </script>
+    <div class="col-sm">
+        <h1>Modificar Integrante con ID: {{ id_integrante }}</h1>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+
+    <br>
+    <br>
+    <a class="btn btn-danger" href="{% url 'proyectos-integrantes' id_proyecto=id_proyecto %}">Volver a Equipo del Proyecto</a></a>
+{% endblock %}

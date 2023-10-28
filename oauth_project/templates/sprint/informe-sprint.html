@@ -1,0 +1,326 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+   <!-- Por si se deba debugear {{ datos }} -->
+    <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                        <h1 class="h3 mb-0 text-gray-800">Informe del Sprint N° {{ sprint.id }}</h1><br>
+                    </div>
+
+                    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                        <h2 class="h5 mb-0 text-gray-800">Descripción: {{ sprint.descripcion | linebreaksbr}}</h2><br>
+                    </div>
+
+                    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                        <h2 class="h5 mb-0 text-gray-800">Objetivos: {{ sprint.objetivo | linebreaksbr }}</h2><br>
+                    </div>
+
+
+
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-3">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Fechas de Inicio - Fin (Real)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                {{  datos.fecha_inicio_sprint|default_if_none:"NO INICIADO" }} - {{ datos.fecha_fin_oficial_sprint|default_if_none:"NO FINALIZADO" }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-3">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Fechas de Inicio - Fin (Planificado)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                {{  datos.fecha_inicio_sprint|default_if_none:"NO INICIADO" }} - {{ datos.fecha_planificada_fin_sprint|default_if_none:"NO FINALIZADO" }}
+                                                <br>
+                                                {{ datos.dias_restantes_planif }} días restantes
+                                                <br>
+                                                {{ datos.dias_de_retraso }} días retrasados
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-3">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Fechas de Inicio - Fin (Estimado)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                {{  datos.fecha_inicio_sprint|default_if_none:"NO INICIADO" }} - {{ datos.fecha_estimada_fin_sprint|default_if_none:"NO FINALIZADO" }}
+                                                <br>
+                                                {{ datos.dias_estimado_terminar_tareas }} días restantes
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-3">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Horas de Trabajo U.S estimado</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                Hs. Estimado:<br> {{ datos.trabajo_total_us_en_horas_sprint.cant_horas }} Hs. en {{ datos.trabajo_total_us_en_horas_sprint.cant_us }} U.S
+                                                <br>
+                                                Días restantes: {{ datos.dias_estimado_terminar_tareas }} días
+                                                <br>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Annual) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-3">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Integrantes y Capacidad del Equipo</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                Cant. Integrantes: {{ sprint.calcular_numero_integrantes_equipo }} Hs
+                                                Capacidad diaria: {{ sprint.calcular_capacidad_equipo_cantidad_horas }} Hs
+                                                Equipo: {{ sprint.lista_equipo_text }}
+                                            </div>
+
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tasks Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-3">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Porcentaje de Tareas completadas
+                                            </div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"> {{ datos.porc_tareas_finalizadas }}%</div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: {{ datos.porc_tareas_finalizadas }}%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                    <div class="h6 mb-0 font-weight-bold text-gray-800">
+                                                {{ datos.cantidad_tareas_finalizadas }} de {{ datos.cantidad_tareas }} finalizadas
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-3">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Tareas pendientes (Sin finalizar)</div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"> {{ datos.porc_tareas_pendientes }}%</div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-warning" role="progressbar"
+                                                            style="width: {{ datos.porc_tareas_pendientes }}%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                    <div class="h6 mb-0 font-weight-bold text-gray-800">
+                                                {{ datos.cantidad_tareas_pendientes }} de {{ datos.cantidad_tareas }} pendientes
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                         <div class="col-xl-3 col-md-6 mb-3">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Tareas asignadas por Integrante<br></div>
+                                            <div class="h8 mb-0 mr-3 font-weight-bold text-gray-800"> {{ datos.cant_tarea_asignada }} de {{ datos.cantidad_tareas }} están asignadas</div>
+
+                                            {% for x in datos.equipo_integrantes %}
+                                                {{ x.nombre }} - {{ x.cant_tareas_asignadas }} de {{ datos.cant_tarea_asignada }}
+                                                <div class="row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="h8 mb-0 mr-3 font-weight-bold text-gray-800"> {{ x.porc_tarea_realizada }}%</div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-warning" role="progressbar"
+                                                            style="width: {{ x.porc_tarea_realizada }}%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                                </div>
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-12">
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-3">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Cantidad de Horas de Trabajo Registradas: {{ datos.cant_horas_registradas_sprint }} Hs.</h6>
+                                </div>
+                                <div class="card-body">
+                                    Cantidad de Registros de Trabajo: {{ datos.cant_evento_registro_horas }}
+                                    {% for key in datos.trabajos_registrados %}
+                                        {% if key.tipo_evento == 'sistema' %}
+                                            <div class="font-italic"> {{ key.fecha }}: [SISTEMA] {{ key.descripcion }} por {{ key.usuario }}<br></div>
+                                        {% elif key.tipo_evento == 'registro_horas'%}
+                                            <div class="font-weight-light">
+                                            {{ key.fecha }}: {{ key.usuario }} registró {{ key.data.cant_horas }} horas. Concepto: {{ key.descripcion }}
+                                            </div>
+                                            {% elif key.tipo_evento == 'font-italic'%}
+                                            {{ key.fecha }}: {{ key.usuario }} - {{ key.descripcion }}
+                                            {% else %}
+                                            <div class="font-weight-bolder">
+                                            {{ key.fecha }}: [{{ key.usuario }}] - {{ key.descripcion }}<br>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-3">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Cantidad de Observaciones Registradas: {{ datos.cant_evento_observaciones }} Registros.</h6>
+                                </div>
+                                <div class="card-body">
+                                    {% for key in datos.observaciones_registradas %}
+                                        {% if key.tipo_evento == 'sistema' %}
+                                            <div class="font-italic"> {{ key.fecha }}: [SISTEMA] {{ key.descripcion }} por {{ key.usuario }}<br></div>
+                                        {% elif key.tipo_evento == 'registro_horas'%}
+                                            <div class="font-weight-light">
+                                            {{ key.fecha }}: {{ key.usuario }} registró {{ key.descripcion }}
+                                            </div>
+                                            {% elif key.tipo_evento == 'font-italic'%}
+                                            {{ key.fecha }}: {{ key.usuario }} - {{ key.descripcion }}
+                                            {% else %}
+                                            <div class="font-weight-bolder">
+                                            {{ key.fecha }}: [{{ key.usuario }}] - {{ key.descripcion }}<br>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="col-lg-12">
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-3">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Cantidad de Horas Aumentadas en Tiempo Estimado en este Sprint: {{ datos.cant_horas_aumentadas }} Hs.</h6>
+                                </div>
+                                <div class="card-body">
+                                    Cantidad de Registros de Aumento de Hora Estimada: {{ datos.cant_evento_hs_aumentada }}
+                                    {% for key in datos.aumento_hs_registrados %}
+                                        {% if key.tipo_evento == 'sistema' %}
+                                            <div class="font-italic"> {{ key.fecha }}: [SISTEMA] {{ key.descripcion }} por {{ key.usuario }}<br></div>
+                                        {% elif key.tipo_evento == 'registro_horas'%}
+                                            <div class="font-weight-light">
+                                            {{ key.fecha }}: {{ key.usuario }} registró {{ key.data.cant_horas }} horas. Concepto: {{ key.descripcion }}
+                                            </div>
+                                            {% elif key.tipo_evento == 'font-italic'%}
+                                            {{ key.fecha }}: {{ key.usuario }} - {{ key.descripcion }}
+                                            {% else %}
+                                            <div class="font-weight-bolder">
+                                            {{ key.fecha }}: [{{ key.usuario }}] - {{ key.descripcion }}<br>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+    </div>
+
+
+
+    <br>
+    <br>
+    <a class="btn btn-danger" href="{% url 'sprints-proyecto' id_proyecto=sprint.proyecto.id %}">Voler a Sprints del Proyecto N° {{ sprint.proyecto.id  }}</a>
+    <br>
+    <br>
+{% endblock %}

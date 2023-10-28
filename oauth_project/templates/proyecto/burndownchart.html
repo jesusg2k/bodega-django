@@ -1,0 +1,79 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+<h1>Burndown Proyecto: {{ proyecto.id }} - {{ proyecto.nombre_proyecto }}</h1>
+
+     <div id="container" style="width: 75%;">
+    <canvas id="pie-chart"></canvas>
+  </div>
+
+     <div id="container" style="width: 75%;">
+    <canvas id="chartvec"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script>
+
+
+    var config2 = {
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: {{ data|safe }},
+          backgroundColor: [
+            '#696969', '#808080', '#A9A9A9', '#C0C0C0', '#D3D3D3'
+          ],
+          label: 'Cantidad de tareas pendientes'
+        }],
+        labels: {{ labels|safe }}
+      },
+      options: {
+        responsive: true,
+         scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true
+            }
+        }]
+    }
+
+      }
+    };
+
+
+    var config = {
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: {{ data_v|safe }},
+          backgroundColor: [
+            '#696969', '#808080', '#A9A9A9', '#C0C0C0', '#D3D3D3'
+          ],
+          label: 'Tareas realizadas por Sprint'
+        }],
+        labels: {{ labels_v|safe }}
+      },
+      options: {
+        responsive: true,
+         scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true
+            }
+        }]
+    }
+
+      }
+    };
+
+    window.onload = function() {
+      var ctx = document.getElementById('chartvec').getContext('2d');
+      window.myPie = new Chart(ctx, config);
+       var ctx = document.getElementById('pie-chart').getContext('2d');
+      window.myPie = new Chart(ctx, config2);
+    };
+
+  </script>
+    <a class="btn btn-danger" href="/proyectos">Volver a Proyectos</a></a>
+    <br>
+    <br>
+{% endblock %}

@@ -1,0 +1,204 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+<h1>Sprint Backlog: {{ sprint.id }} - {{ sprint.descripcion }} del {{ proyecto.id }} - {{ proyecto.nombre_proyecto }}</h1>
+    <br><br>
+    {% comment %}
+                    {% for key,values in data.permisos.items %}
+                        {% if key == proyecto.id %}
+                             {% for key,values in data.permisos.items %}
+                        {% if key == proyecto.id %}
+                            {% if values.13 == True %}
+                                    <a class="btn btn-primary" href="{% url 'product-backlog' id_proyecto=proyecto.id %}">Ver Product Backlog</a>
+                                    <a class="btn btn-primary" href="{% url 'product-backlog-finalizado' id_proyecto=proyecto.id %}">Finalizados</a>
+                                    <a class="btn btn-primary" href="{% url 'product-backlog-pendiente' id_proyecto=proyecto.id %}">Pendientes</a>
+                                    <a class="btn btn-primary" href="{% url 'product-backlog-sin-sprint-asignado' id_proyecto=proyecto.id %}">Sin Sprint Asignado</a>
+                                    <a class="btn btn-primary" href="{% url 'product-backlog-sin-usuario-asignado' id_proyecto=proyecto.id %}">Sin Usuario Asignado</a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+
+
+                            {% endif %}
+                        {% endfor %}
+                        {% endcomment %}
+
+    <br>
+    <br>
+
+    <table id="tabla-potenciada" class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Descripcion</th>
+          <th scope="col">User. P.</th>
+          <th scope="col">Buss. Value.</th>
+          <th scope="col">Prioridad.</th>
+          <th scope="col">Estado Sprint</th>
+          <th scope="col">Estado Gral</th>
+          <th scope="col">Tipo U.S</th>
+          <th scope="col">Sprint ID</th>
+          <th scope="col">Asignado</th>
+          <th scope="col">Proy. ID</th>
+          <th scope="col">Esti. Inicial Hs.</th>
+          <th scope="col">Esti. Hs.</th>
+          <th scope="col">Acciones</th>
+          <th scope="col">Usuario</th>
+          <th scope="col">Asignado</th>
+      </thead>
+         <tbody>
+            {% for queue in userstorys %}
+                <tr>
+                    <td>{{ queue.id }}</td>
+                    <td>{{ queue.descripcion }}</td>
+                    <td>
+                        {% if queue.user_point < 3 %}
+                            <a href="#" class="btn btn-success btn-circle btn-sm">
+                                <i class="font-weight-bold">{{ queue.business_value }}</i>
+                            </a>
+                        {% else %}
+                            {% if queue.user_point < 5 %}
+                            <a href="#" class="btn btn-warning btn-circle btn-sm">
+                                        <i class="font-weight-bold">{{ queue.user_point }}</i>
+                            </a>
+                        {% else %}
+                            <a href="#" class="btn btn-danger btn-circle btn-sm">
+                                        <i class="font-weight-bold">{{ queue.user_point }}</i>
+                            </a>
+                        {% endif%}
+                        {% endif%}
+                    </td>
+                    <td>{% if queue.business_value < 3 %}
+                            <a href="#" class="btn btn-success btn-circle btn-sm">
+                                <i class="font-weight-bold">{{ queue.business_value }}</i>
+                            </a>
+                        {% else %}
+                            {% if queue.business_value < 5 %}
+                            <a href="#" class="btn btn-warning btn-circle btn-sm">
+                                        <i class="font-weight-bold">{{ queue.business_value }}</i>
+                            </a>
+                        {% else %}
+                            <a href="#" class="btn btn-danger btn-circle btn-sm">
+                                        <i class="font-weight-bold">{{ queue.business_value }}</i>
+                            </a>
+                        {% endif%}
+                        {% endif%}
+                    </td>
+
+                    <td>
+                        {{ queue.prioridad }}
+                    </td>
+                    <td>
+                         {% if queue.cancelado == False %}
+                            {{ queue.estado }}
+                        {% else %}
+                             <a href="#" class="btn btn-danger">
+                                <i class="font-weight-bold font-italic">Cancelado</i>
+                            </a>
+                        {% endif %}
+                    </td>
+
+                   {% if queue.finalizado == True %}
+                        <td> FINALIZADO </td>
+                    {% else %}
+                        <td> PENDIENTE </td>
+                    {% endif %}
+                    <td>{{ queue.tipo_user_story.descripcion }}</td>
+
+                    {% if queue.sprint_asoc == null %}
+                        <td>
+                        No asignado
+                        </td>
+                    {% else %}
+                         <td>
+                         {{ queue.sprint_asoc.id }}
+                        </td>
+                    {% endif%}
+
+                    {% if queue.finalizado == True %}
+                        <td></td>
+                    {% else %}
+                        <td>
+                       {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                            {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                            {% if values.29 == True %}
+                                    {% if queue.sprint_asoc == null %}
+                                    <a class="btn btn-primary" href="{% url 'view-asignar-sprint-user-story' id_user_story=queue.id id_sprint=sprint.id %}">Asignar Sprint</a>
+                                    {% else %}
+                                    <a class="btn btn-primary" href="{% url 'view-asignar-sprint-user-story' id_user_story=queue.id id_sprint=sprint.id %}">Reasignar</a>
+                                    {% endif%}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+
+
+                            {% endif %}
+                        {% endfor %}
+
+                        </td>
+
+
+
+                    {% endif %}
+
+
+
+                    <td>{{ queue.proyecto.id }}</td>
+                    <td>{{ queue.estimacion_horas_inicial }} Hs.</td>
+                    <td>{{ queue.estimacion_horas }} Hs.</td>
+                    <td>
+                    <a class="btn btn-primary" href="{% url 'ver-eventos-user-story' id_user_story=queue.id %}">Ver Eventos</a>
+                     </td>
+                    <td>
+                        {% if queue.usuario_asignado == null %}
+                            No asingado
+                        {% else %}
+                            {{ queue.usuario_asignado.username }}
+                        {% endif %}
+                    </td>
+                    <td>
+                         {% if queue.finalizado == True %}
+
+                         {% else %}
+
+
+                                {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                             {% for key,values in data.permisos.items %}
+                        {% if key == queue.proyecto.id %}
+                            {% if values.29 == True %}
+                                        {% if queue.usuario_asignado == null %}
+                                        <a class="btn btn-primary" href="{% url 'asignar-usuario-user-story' id_user_story=queue.id id_sprint=sprint.id %}">Asignar</a>
+                                        {% else %}
+                                            <a class="btn btn-primary" href="{% url 'asignar-usuario-user-story' id_user_story=queue.id id_sprint=sprint.id %}">Reasignar</a>
+                                        {% endif%}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+
+
+                            {% endif %}
+                        {% endfor %}
+
+
+
+
+
+
+                         {% endif %}
+                    </td>
+
+                </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+
+
+    <a class="btn btn-danger" href="/sprints/{{ proyecto.id }}">Volver a Sprints</a></a>
+    <br>
+    <br>
+{% endblock %}

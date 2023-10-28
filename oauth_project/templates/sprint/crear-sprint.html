@@ -1,0 +1,110 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+     {% load static %}
+    <script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+         {
+            "label": "N° de Proyecto",
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Por favor, complete este campo"
+            },
+            "disabled": true,
+            "defaultValue": {{ proyecto.id }},
+            "key": "id_proyecto",
+            "type": "textfield",
+            "input": true
+        },
+         {
+            "label": "N° de Sprint",
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Por favor, complete este campo"
+            },
+            "disabled": true,
+            "defaultValue": {{ nro_sprint }},
+            "key": "nro_sprint",
+            "type": "textfield",
+            "input": true
+        },
+        {
+            "label": "Descripción de Sprint",
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Por favor, complete este campo"
+            },
+            "key": "descripcion_sprint",
+            "type": "textfield",
+            "input": true
+        },
+        {
+            "label": "Duración de Sprint (en días)",
+            "mask": false,
+            "tableView": false,
+            "delimiter": false,
+            "requireDecimal": false,
+            "inputFormat": "plain",
+            "truncateMultipleSpaces": false,
+            "validate": {
+                "required": true,
+                "min": 7,
+                "max": 31
+            },
+            "errors": {
+                "required": "Por favor, complete este campo",
+                "min": "Un sprint no puede durar menos de 10 días",
+                "max": "Un sprint no puede durar más de 31 días"
+            },
+            "key": "duracion_sprint",
+            "type": "number",
+            "input": true
+        },
+        {
+            "label": "Objetivos",
+            "autoExpand": true,
+            "tableView": true,
+            "key": "objetivos",
+            "type": "textarea",
+            "input": true
+        },
+        {
+            "label": "+ Crear Sprint",
+            "action": "event",
+            "event": "evento-enviar-form",
+            "showValidations": true,
+            "disableOnInvalid": true,
+            "tableView": false,
+            "key": "submit",
+            "type": "button",
+            "input": true
+        }
+
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'crear-sprint-post' %}";
+};
+    </script>
+    <div class="col-sm">
+        <h1>Crear Sprint</h1>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+{% endblock %}

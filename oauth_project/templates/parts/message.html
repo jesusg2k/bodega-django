@@ -1,0 +1,39 @@
+
+
+{% if data.msg != "" and data.msg|length > 0 %}
+    <div class="alert alert-success" role="alert">
+        {{ data.msg }}
+    </div>
+{% endif %}
+
+{% if msg != "" and msg|length > 0 %}
+    <div class="alert alert-success" role="alert">
+        {{ msg }}
+    </div>
+{% endif %}
+
+{% if data.mmsgerror != "" and data.msgerror|length > 0 %}
+    <div class="alert alert-danger" role="alert">
+        {{ data.msgerror }}
+    </div>
+{% endif %}
+
+{% if msgerror != "" and msgerror|length > 0 %}
+    <div class="alert alert-danger" role="alert">
+        {{ msgerror }}
+    </div>
+{% endif %}
+
+
+{% if datamsg.msg != "" and datamsg.msg|length > 0 %}
+    <div class="alert alert-success" role="alert">
+        {{ datamsg.msg }}
+    </div>
+{% endif %}
+
+
+{% if datamsg.msgerror != "" and datamsg.msgerror|length > 0 %}
+    <div class="alert alert-danger" role="alert">
+        {{ datamsg.msgerror }}
+    </div>
+{% endif %}

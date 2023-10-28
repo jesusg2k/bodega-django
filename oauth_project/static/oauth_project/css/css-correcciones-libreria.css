@@ -1,0 +1,8 @@
+.error {
+    font-size: 1rem !important;
+}
+
+.formio-component-datagrid {
+overflow: visible !important;
+height: auto !important;
+}

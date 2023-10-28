@@ -1,0 +1,99 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+    <script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+         {
+            "label": "ID",
+            "tableView": true,
+            "key": "id_tipo_story",
+            "type": "textfield",
+            "input": true,
+            "validate": {
+                        "required": true,
+                        "unique": true
+            },
+             "disabled":true,
+            "errors": {
+                "required": "{{field}} complete este campo por favor."
+            },
+            defaultValue: {{ tipo_story.id }}
+        },
+        {
+            "label": "Nombre de Tipo User Story",
+            "tableView": true,
+            "key": "nombre_tipo_story",
+            "type": "textfield",
+            "input": true,
+            "validate": {
+                        "pattern": "[A-Za-z0-9 \\-* ]*",
+                        "required": true,
+                        "unique": true
+            },
+            "errors": {
+                "required": "{{field}} complete este campo por favor."
+            },
+            defaultValue: "{{ tipo_story.descripcion | safe}}"
+        },
+        {
+            "label": "Estados",
+            "reorder": false,
+            "addAnotherPosition": "bottom",
+            "layoutFixed": false,
+            "enableRowGroups": false,
+            "initEmpty": false,
+            "tableView": false,
+            "defaultValue": {{ estados_default_values|safe }},
+            "validate": {
+                "require": true,
+                "custom": "console.log(data.dataGrid.length)\nconsole.log(data.dataGrid)\nvar n = data.dataGrid.length\nobjects = {};\ndatagrid = data.dataGrid\nvalido = true\nconsole.log(valido)\ndo_exist = false\ndoing_exist = false\ndone_exist = false\nfor(let i=0; i<n; i++){\n  for(const key in datagrid[i]){\n    console.log('nombre key-> '+key)\n    if(datagrid[i][key]===\"\"){\n        valid = 'Error: Hay un elemento vacio';\n        break;\n    }\n    if(!key.includes('unique')){console.log(\"no encontró el unique en \"+key)\ncontinue; }\n  \tif((objects[datagrid[i][key]]) != undefined){\n      console.log('este se repite->'+datagrid[i][key])\n      valido = false\n  \t}\n  \tobjects[datagrid[i][key]] = 1\nif(datagrid[i][key]===\"done\") {done_exist=true}\nif(datagrid[i][key]===\"do\") {do_exist=true} if(datagrid[i][key]===\"doing\") {doing_exist=true}   }\n}console.log(\"doing_exist\"+doing_exist)\nconsole.log(\"done_exist\"+done_exist)\nconsole.log(\"do_exist\"+do_exist)\nif(!(valid+\"\").includes('Error')){\n    valid = (valido)? true : \"Hay valores repetidos\"\n}\n\nif(!do_exist || !doing_exist || !done_exist) {\n        valid = \"Los estados do, doing y done son obligatorios\"\n}\n\n"
+            },
+            "key": "dataGrid",
+            "type": "datagrid",
+            "input": true,
+            "components": [
+                {
+                    "label": "Estados",
+                    "tableView": true,
+                    "validate": {
+                        "pattern": "[A-Za-z0-9 \\-* ]*",
+                        "required": true,
+                        "unique": true
+                    },
+                    "unique": true,
+                    "key": "estado-unique",
+                    "type": "textfield",
+                    "input": true
+                },
+            ],
+        },
+        {
+                    "label": "+ Actualizar Tipo User Story",
+                    "action": "event",
+                    "event": "evento-enviar-form",
+                    "showValidations": true,
+                    "disableOnInvalid": true,
+                    "tableView": false,
+                    "key": "submit",
+                    "type": "button",
+                    "input": true
+        }
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'actualizar_tipo_user_story_pos' %}";
+};
+    </script>
+    <div class="col-sm">
+        <h1>Crear Tipo User Story</h1>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+{% endblock %}

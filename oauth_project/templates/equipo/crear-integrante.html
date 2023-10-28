@@ -1,0 +1,76 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+<script type="text/javascript">
+    window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+        {
+            "label": "Usuario",
+            "widget": "choicesjs",
+            "tableView": true,
+            "data": {
+                "values": {{ miembros_disponibles|safe }}
+            },
+            "dataType": "Object",
+            "template": '{% verbatim %} {{ item.value }} - {{item.label}}  {% endverbatim %}',
+            "key": "miembro",
+            "type": "select",
+            "input": true,
+            "disableLimit": true,
+            "validate": {
+                "required": true
+            },
+        },
+        {
+            "label": "Cant. Horas diarias",
+            "tableView": true,
+            "key": "horas",
+            "type": "number",
+            "input": true,
+            "validate": {
+                "min": 1,
+                "max": 8
+            },
+        },
+        {
+            "label": "JsonMiembro",
+            "tableView": true,
+            "calculateValue": "var json = JSON.stringify(data);\nconsole.log(json)\ndocument.getElementById('guardar_json_txt').value = json",
+            "key": "form",
+            "type": "hidden",
+            "disabled": true,
+            "input": true
+        },
+
+  ]
+}).then(function(form) {
+
+  form.on('submit', function(submission) {
+
+  });
+});
+
+    console.log("FORM IO DESPLEGADO")
+
+};
+
+    </script>
+    <div class="col-sm">
+        <h1> Agregar Integrante en proyecto {{ proyecto.nombre_proyecto }}</h1>
+    <form id="formio" action="{% url 'agregar_integrante_proyecto_post' id_proyecto=proyecto.id %}" method="POST"></form>
+    <form class="user" action="{% url 'agregar_integrante_proyecto_post' id_proyecto=proyecto.id %}" method="post">
+        {% csrf_token %}
+        <div class="col-sm-12 mb-6 mb-sm-0">
+            <input id="guardar_json_txt" hidden="true"  type="text" name="data" class="form-control form-control-user"
+            placeholder="json">
+        </div>
+        <div class="d-flex justify-content-left mt-3 login_container">
+                <button type="submit" class="btn btn-success">Agregar Integrante</button>
+        </div>
+        </form>
+    </div>
+    <br>
+    <br>
+    <a class="btn btn-danger" href="{% url 'proyectos-integrantes' id_proyecto=proyecto.id %}">Volver a Equipo del Proyecto</a></a>
+{% endblock %}

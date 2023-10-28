@@ -1,0 +1,100 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+     {% load static %}
+    <script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+         {
+            "label": "N° de Sprint",
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Por favor, complete este campo"
+            },
+            "disabled": true,
+            "defaultValue": {{ sprint.id }},
+            "key": "nro_sprint",
+            "type": "textfield",
+            "input": true
+        },
+        {
+            "label": "Descripción de Sprint",
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Por favor, complete este campo"
+            },
+            "disabled": true,
+            "defaultValue": "{{ sprint.descripcion|safe }}",
+            "key": "descr_sprint",
+            "type": "textfield",
+            "input": true
+        },
+        {
+            "label": "Nueva Descripción de Sprint",
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Por favor, complete este campo"
+            },
+            "key": "descripcion_sprint",
+            "type": "textfield",
+            "input": true
+        },
+        {
+            "label": "Objetivos",
+            "autoExpand": true,
+            "tableView": true,
+            "key": "objetivos",
+            "type": "textarea",
+            "input": true,
+            "validate": {
+                "required": true
+            },
+        },
+        {
+            "label": "proyecto",
+            "autoExpand": true,
+            "tableView": true,
+            "defaultValue": {{ id_proyecto }},
+            "key": "proyecto",
+            "type": "hidden",
+            "input": true
+        },
+        {
+            "label": "+ Actualizar Sprint",
+            "action": "event",
+            "event": "evento-enviar-form",
+            "showValidations": true,
+            "disableOnInvalid": true,
+            "tableView": false,
+            "key": "submit",
+            "type": "button",
+            "input": true
+        }
+
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'modificar-sprint-post' %}";
+};
+    </script>
+    <div class="col-sm">
+        <h1>Actualizar Sprint</h1>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+{% endblock %}

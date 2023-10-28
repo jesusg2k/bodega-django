@@ -1,0 +1,70 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+    <script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+        {
+            "label": "Tipos de User Story del Sistema",
+            "widget": "choicesjs",
+            "tableView": true,
+
+            "data": {
+               "values": {{ lista_us|safe }}
+            },
+
+            "dataType": "Object",
+            "key": "tipouserstory",
+            "type": "select",
+            "input": true,
+
+            "validate": {
+                "required": true
+            },
+        },
+        {
+            "label": "JsonMiembro",
+            "tableView": true,
+            "calculateValue": "var json = JSON.stringify(data);\nconsole.log(json)\ndocument.getElementById('guardar_json_txt').value = json",
+            "key": "form",
+            "type": "hidden",
+            "disabled": true,
+            "input": true
+        },
+        {
+                    "label": "+ Importar TipoUS",
+                    "action": "event",
+                    "event": "evento-enviar-form",
+                    "showValidations": true,
+                    "disableOnInvalid": true,
+                    "tableView": false,
+                    "key": "submit",
+                    "type": "button",
+                    "input": true
+        }
+
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'modificar-us-proyecto_post' id_proyecto_id=id_proyecto_id %}";
+};
+    </script>
+    <div class="col-sm">
+        <h1>Importar Tipo de User Story al Proyecto: {{ id_proyecto_id }}</h1>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+
+    <a class="btn btn-danger" href="{% url 'tipos-user-story-proyecto' id_proyecto=id_proyecto_id %}">Volver a Tipos User Story del Proyecto</a>
+    <br>
+    <br>
+{% endblock %}
+
+
+

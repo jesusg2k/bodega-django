@@ -1,0 +1,60 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+<h1>Tipos de User Story</h1>
+    <a class="btn btn-primary" href="/crear-tipo-user">Crear Tipo User Story</a>
+    <br><br>
+    <table id="tabla-potenciada" class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Descripción Tipo</th>
+          <th scope="col">Estados</th>
+          <th scope="col">Modificable</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+         <tbody>
+            {% for queue in data.tipos_user_story %}
+                <tr><td>{{ queue.id }}</td>
+                <td>{{ queue.descripcion }}</td>
+                <td>{{ queue.estados }}</td>
+                <td>{% if queue.en_uso == False %}
+                <a href="#" class="btn btn-success btn-icon-split">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-check"></i>
+                    </span>
+                    <span class="text">Modificable/Eliminable</span>
+                </a>
+                {% else %}
+                <a href="#" class="btn btn-danger btn-icon-split">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </span>
+                    <span class="text">INALTERABLE (EN USO)</span>
+                </a>
+                {% endif %}</td>
+                <td>
+                    {% if not queue.en_uso %}
+                            <a href="{% url 'modificar-tipo-story-get' id=queue.id %}" class="btn btn-warning btn-icon-split">
+                                <span class="icon text-white-50">
+                                            <i class="fas fa-folder"></i>
+                                </span>
+                                <span class="text">Modificar</span>
+                            </a>
+                        <a href="{% url 'eliminar_tipo_story_get' id=queue.id %}" class="btn btn-danger btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-trash"></i>
+                                    </span>
+                                    <span class="text">Eliminar</span>
+                        </a>
+                    {% else %}
+
+                    {% endif %}
+                </td>
+                </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+
+
+{% endblock %}

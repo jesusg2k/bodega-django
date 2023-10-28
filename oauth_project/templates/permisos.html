@@ -1,0 +1,32 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+<h1>Lista de Permisos del Sistema</h1>
+    <a class="btn btn-primary" href="{% url 'form-crear-permiso' %}">Crear permiso</a>
+    <br><br>
+    <table id="tabla-potenciada" class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Descripción de Permiso</th>
+          <th scope="col">Acciones</th>
+      </thead>
+         <tbody>
+            {% for queue in data.lista_permisos %}
+                <tr>
+                    <td>{{ queue.id }}</td>
+                    <td>{{ queue.descripcion }}</td>
+                    <td>
+                        <a href="{% url 'eliminar_permiso_delete' id=queue.id %}" class="btn btn-danger btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-trash"></i>
+                                    </span>
+                                    <span class="text">Eliminar Permiso</span>
+                    </a>
+                    </td>
+                </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+
+
+{% endblock %}

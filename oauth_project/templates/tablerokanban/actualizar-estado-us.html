@@ -1,0 +1,111 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+<script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+            {
+            "label": "COD. User Story",
+            "tableView": true,
+            "key": "id_user_story",
+            "type": "textfield",
+            "input": true,
+            "disabled": true,
+             "validate": {
+                "required": true
+            },
+            "defaultValue": "{{ userstory.id|safe }}",
+            "errors": {
+                "required": "Cod de U.S es un campo obligatorio."
+                },
+            },
+        {
+            "label": "Estado actual del US",
+            "tableView": true,
+            "key": "estado_actual",
+            "type": "textfield",
+            "input": true,
+            "disabled": true,
+             "validate": {
+                "required": true
+            },
+            "defaultValue": "{{ userstory.estado|safe }}",
+            "errors": {
+                "required": "Cod de U.S es un campo obligatorio."
+                },
+            },
+            {
+                "label": "Finalizar User Story",
+                "tableView": false,
+                "key": "finalizarUserStory",
+                "type": "checkbox",
+                "input": true,
+                "defaultValue": false,
+                "disabled" : {{ puede_finalizar_tarea|safe }}
+            },
+            {
+            "label": "Descripción de evento que finaliza estado",
+            "tableView": true,
+            "key": "evento_estado",
+            "type": "textfield",
+            "input": true,
+             "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "La descripción del evento de finalización es un campo obligatorio."
+            },
+            },
+            {
+            "label": "Estado a asignarse",
+            "widget": "choicesjs",
+            "tableView": true,
+
+            "data": {
+               "values": {{ estados|safe }}
+            },
+
+            "dataType": "Object",
+            "key": "estado_fin",
+            "type": "select",
+            "input": true,
+
+            "validate": {
+                "required": true
+            },
+        },
+        {
+                    "label": "Actualizar",
+                    "action": "event",
+                    "event": "evento-enviar-form",
+                    "showValidations": true,
+                    "disableOnInvalid": true,
+                    "tableView": false,
+                    "key": "submit",
+                    "type": "button",
+                    "input": true
+        }
+
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'actualizar_estado_us_post' %}";
+};
+    </script>
+    <div class="col-sm">
+        <h2>Actualizar Estado de User Story N°{{ userstory.id }} - {{ userstory.descripcion }}</h2>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+{% endblock %}
+
+
+
+
+

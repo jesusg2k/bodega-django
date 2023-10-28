@@ -1,0 +1,35 @@
+{% extends "parts/template-master.html" %}
+{% block content %}
+
+<h2>Eventos del U.S N° {{  user_story.id }} -  {{ user_story.descripcion }}</h2>
+    <br><br>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Historial de Evento</h6>
+        </div>
+        <div class="card-body">
+            {% for key in eventos %}
+                {% if key.tipo_evento == 'sistema' %}
+                    <div class="font-italic"> {{ key.fecha }}: [SISTEMA] {{ key.descripcion }} por {{ key.usuario }}<br></div>
+                {% elif key.tipo_evento == 'registro_horas'%}
+                    <div class="font-weight-light">
+                    {{ key.fecha }}: {{ key.usuario }} registró {{ key.data.cant_horas }} horas. Concepto: {{ key.descripcion }}
+                    </div>
+                    {% elif key.tipo_evento == 'font-italic'%}
+                    {{ key.fecha }}: {{ key.usuario }} - {{ key.descripcion }}
+                    {% else %}
+                    <div class="font-weight-bolder">
+                    {{ key.fecha }}: [{{ key.usuario }}] - {{ key.descripcion }}<br>
+                    </div>
+
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-sm">
+        {% include "parts/form.generic.html" %}
+    </div>
+
+
+{% endblock %}

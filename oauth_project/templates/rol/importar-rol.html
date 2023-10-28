@@ -1,0 +1,86 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+    <script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+        {
+            "label": "Roles Disponibles del Sistema",
+            "widget": "choicesjs",
+            "tableView": true,
+            "data": {
+                "values": {{ roles_disponibles_json|safe }}
+            },
+            "template": '{% verbatim %} {{ item.value }} - {{ item.label }} {% endverbatim %}',
+            "key": "rol",
+            "type": "select",
+            "input": true,
+            "validate": {
+                "required": true
+            },
+        },
+
+        {
+            "label": "jsonpermisos",
+            "tableView": true,
+            "key": "jsonpermisos",
+            "type": "hidden",
+            "disabled": true,
+            "defaultValue": '{{ permisos_json|safe }}',
+            "input": true
+        },
+        {
+            "label": "Permisos del Rol",
+            "tableView": true,
+            "key": "permisosver",
+            "calculateValue": "console.log(data);\nvar json = JSON.stringify(data);\ntext=JSON.stringify(JSON.parse(data.jsonpermisos)[data.rol]);\ntext = text.replace(/,/g, ' ');\ntext2 = text.replaceAll('{\"id\"\:', ' ');\ntext2 = text2.replaceAll('\"descripcion\"\:\"',' - ');\ntext2 = text2.replaceAll('\"}','\\n');\ntext2 = text2.replaceAll('[',' ');\ntext2 = text2.replaceAll(']','');\nconsole.log(text2); value = text2;",
+            "type": "textarea",
+            "autoExpand": true,
+            "disabled": true,
+            "input": true
+        },
+        {
+            "label": "JsonMiembro",
+            "tableView": true,
+            "key": "form",
+            "type": "hidden",
+            "disabled": true,
+            "input": true
+        },
+        {
+                    "label": "+ Importar Rol",
+                    "action": "event",
+                    "event": "evento-enviar-form",
+                    "showValidations": true,
+                    "disableOnInvalid": true,
+                    "tableView": false,
+                    "key": "submit",
+                    "type": "button",
+                    "input": true
+        }
+
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'importar_rol_post' id_proyecto_id=id_proyecto_id %}";
+};
+    </script>
+    <div class="col-sm">
+        <h1>Importar Rol al Proyecto: {{ id_proyecto_id }}</h1>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+
+    <br>
+    <br>
+    <a class="btn btn-danger" href="{% url 'roles-proyecto' id_proyecto_id=id_proyecto_id%}">Volver a Roles del Proyecto</a>
+{% endblock %}
+
+
+
