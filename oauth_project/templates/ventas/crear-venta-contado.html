@@ -5,57 +5,68 @@
     Formio.icons = 'fontawesome';
     Formio.createForm(document.getElementById('formio'), {
     components: [
-                        {
-                    "label": "Cliente",
-                    "widget": "choicesjs",
-                    "tableView": true,
-                    "validate": {
-                        "required": true
-                    },
-                    "dataSrc": "url",
-                    "data": {
-                        "url": "http://{{ IP_SERVER  }}:8000/api/clientes/",
-                        "headers": [
-                            {
-                                "key": "",
-                                "value": ""
-                            }
-                        ]
-                    },
-                    "valueProperty": "id",
-                    "dataType": "Object",
-                    "template": '{% verbatim %} {{item.id}} - {{ item.nombre }} - {{ item.documento }} {% endverbatim %}',
-                    "key": "cliente",
-                    "defaultValue": "",
-                    "type": "select",
-                    "input": true
-                },
         {
-                    "label": "Tipo Venta",
-                    "widget": "choicesjs",
+            "label": "Cliente",
+            "widget": "choicesjs",
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "dataSrc": "url",
+            "data": {
+                "url": "http://{{ IP_SERVER }}:8000/api/clientes/",
+                "headers": [
+                    {
+                        "key": "",
+                        "value": ""
+                    }
+                ]
+            },
+            "valueProperty": "id",
+            "dataType": "Object",
+            "template": '{% verbatim %} {{item.id}} - {{ item.nombre }} {% endverbatim %}',
+            "key": "cliente",
+            "defaultValue": "",
+            "type": "select",
+            "input": true
+        },
+        {
+                    "label": "Fecha de Venta",
+                    "widget": {
+                        "type": "calendar",
+                        "altInput": true,
+                        "allowInput": true,
+                        "clickOpens": true,
+                        "enableDate": true,
+                        "enableTime": true,
+                        "mode": "single",
+                        "noCalendar": false,
+                        "format": "yyyy-MM-dd hh:mm a",
+                        "dateFormat": "yyyy-MM-ddTHH:mm:ssZ",
+                        "useLocaleSettings": false,
+                        "hourIncrement": 1,
+                        "minuteIncrement": 5,
+                        "time_24hr": false,
+                        "saveAs": "text",
+                        "displayInTimezone": "viewer",
+                        "locale": "en"
+                    },
+                    "applyMaskOn": "change",
                     "tableView": true,
-                    "validate": {
-                        "required": true
-                    },
-                    "dataSrc": "url",
-                    "data": {
-                        "url": "http://{{ IP_SERVER  }}:8000/api/tipo_venta/",
-                        "headers": [
-                            {
-                                "key": "",
-                                "value": ""
-                            }
-                        ]
-                    },
-                    "defaultValue": "",
-                    "valueProperty": "id",
-                    "dataType": "Object",
-                    "template": '{% verbatim %} {{item.id}} - {{ item.descripcion }} {% endverbatim %}',
-                    "key": "tipo_venta",
-                    "type": "select",
+                    "key": "fecha_venta",
+                    "type": "textfield",
                     "input": true
                 },
-
+             {
+                    "label": "Tipo de Venta",
+                    "applyMaskOn": "change",
+                    "tableView": true,
+                    "key": "tipo_venta",
+                    "type": "textfield",
+                    "disabled": true,
+                    "defaultValue": "CONTADO",
+                    "input": true
+                },
          {
             "label": "Data Grid",
             "reorder": false,
@@ -81,6 +92,15 @@
             "input": true,
             "components": [
                     {
+                    "label": "COD",
+                    "applyMaskOn": "change",
+                    "tableView": true,
+                    "disabled": true,
+                    "key": "id_detalle_venta",
+                    "type": "textfield",
+                    "input": true
+                    },
+                    {
                         "label": "Producto",
                         "widget": "choicesjs",
                         "tableView": true,
@@ -99,7 +119,7 @@
                         },
                         "valueProperty": "id",
                         "dataType": "Object",
-                        "template": '{% verbatim %} {{item.id}} - {{ item.descripcion }} - Cant. {{ item.cantidad_stock  }}{% endverbatim %}',
+                        "template": '{% verbatim %} {{ item.descripcion }} {% endverbatim %}',
                         "key": "producto",
                         "type": "select",
                         "input": true
@@ -132,10 +152,11 @@
                             }
                         ]
                     },
-                    "refreshOn": "producto",
+                    "refreshOn": "detalles_venta.producto",
                     "clearOnRefresh": true,
                     "valueProperty": "id",
                     "selectValues": "precios",
+                    "template": '{% verbatim %} {{item.precio}} $ {% endverbatim %}',
                     "dataType": "Number",
                     "key": "precio_unitario",
                     "type": "select",
@@ -157,6 +178,21 @@
                         "when": "especial",
                         "eq": "true"
                     },
+                    "refreshOn": "especial"
+                },
+                {
+                    "label": "Estado Autorizacion",
+                    "tableView": true,
+                    "key": "estadoAutorizacion",
+                    "type": "textfield",
+                    "input": true,
+                    "conditional": {
+                        "show": true,
+                        "when": "especial",
+                        "eq": "true"
+                    },
+                    "disabled": true,
+                    "defaultValue": "PENDIENTE",
                     "refreshOn": "especial"
                 },
                 {
@@ -211,11 +247,11 @@
     document.getElementById('btn_aceptar_form').click();
   });
 });
-    document.getElementById('form-django').action = "{% url 'crear_venta_post' %}";
+    document.getElementById('form-django').action = "{% url 'crear_venta_contado_post' %}";
 };
     </script>
     <div class="col-sm">
-        <h2>Crear nueva Venta</h2>
+        <h2>Crear Nueva Venta Contado</h2>
         <form id="formio"></form>
         {% include "parts/form.generic.html" %}
     </div>

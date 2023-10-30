@@ -52,7 +52,9 @@ urlpatterns = [
 
    path('activar_tipo_pago_get/<int:id>', viewsabm.activar_tipo_pago_get, name='activar_tipo_pago_get'),
    path('desactivar_tipo_pago_get/<int:id>', viewsabm.desactivar_tipo_pago_get, name='desactivar_tipo_pago_get'),
-
+   path('eliminar_precio_get/<int:id>', viewsabm.eliminar_precio_get, name='eliminar_precio_get'),
+   path('crear_precio_producto_post/<int:id>', viewsabm.crear_precio_producto_post, name='crear_precio_producto_post'),
+   path('modificar_precio_producto_post/<int:id>', viewsabm.modificar_precio_producto_post, name='modificar_precio_producto_post'),
    path('activar_usuario_get/<int:id>', viewsabm.activar_usuario_get, name='activar_usuario_get'),
    path('activar_devolucion_get/<int:id>', viewsabm.activar_devolucion_get, name='activar_devolucion_get'),
    path('desactivar_usuario_get/<int:id>', viewsabm.desactivar_usuario_get, name='desactivar_usuario_get'),
@@ -84,6 +86,8 @@ urlpatterns = [
    path('crear_tipo_pago_post/', viewsabm.crear_tipo_pago_sistema_post, name="crear_tipo_pago_post"),
    path('actualizar-tipo-pago/', viewsabm.actualizar_tipo_pago_sistema_post, name="actualizar_tipo_pago_post"),
    path('crear_venta_post/', viewsabm.crear_venta_post, name="crear_venta_post"),
+   path('crear_venta_contado_post/', viewsabm.crear_venta_contado_post, name="crear_venta_contado_post"),
+   path('crear_devolucion_post/', viewsabm.crear_devolucion_post, name="crear_devolucion_post"),
    path('crear_producto_post/', viewsabm.crear_producto_post, name="crear_producto_post"),
    path('crear_cliente_post/', viewsabm.crear_cliente_post, name="crear_cliente_post"),
    path('modificar_producto_post/<int:id>', viewsabm.modificar_producto_post, name="modificar_producto_post"),
@@ -127,6 +131,12 @@ urlpatterns = [
    path('asignar-us-asignado/<int:id_sprint>', viewsabm.asignar_usuario_us, name="asignar-user-a-us"),
    path('asignar-us-asignado-sprintbacklog/', viewsabm.asignar_usuario_us_sprintbacklog, name="asignar-user-a-us-sprintbackog"),
    path('actualizar_estado_us_post/', viewsabm.actualizar_estado_us_post, name="actualizar_estado_us_post"),
+   path('actualizar_venta_contado_post/', viewsabm.actualizar_venta_contado_post, name="actualizar_venta_contado_post"),
+
+   path('autorizar_precio_get/<int:id>', viewsabm.autorizar_precio_get, name='aceptar_autorizar_precio_get'),
+   path('rechazar_autorizacion_precio_get/<int:id>', viewsabm.desautorizar_precio_get, name='rechazar_autorizacion_precio_get'),
+   path('concretar_venta_contado_post/<int:id>', viewsabm.concretar_venta_contado_post, name='concretar_venta_contado_post'),
+
 
 ]
 

@@ -1,7 +1,7 @@
 {% extends 'parts/template-master.html' %}
 {% block content %}
-    <h1>Usuarios en el sistema</h1>
-    <a class="btn btn-primary" href="{% url 'devoluciones_crear' %}">Crear Usuario</a>
+    <h1>Devoluciones en el sistema</h1>
+    <a class="btn btn-primary" href="{% url 'devoluciones_crear' %}">Registrar Devolucion</a>
     <br>
     <br>
     <div class="text-center">
@@ -13,8 +13,8 @@
           <th scope="col">Motivo</th>
           <th scope="col">Fecha</th>
           <th scope="col">Producto</th>
-          <th scope="col">Estado</th>
-          <th scope="col">Accion</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Monto</th>
         </tr>
       </thead>
          <tbody>
@@ -22,46 +22,11 @@
         {% if not queue.orderDate %}
             <tr>
                 <td>{{ queue.id }}</td>
-                <td>{{ queue.motivo }}</td>
+                <td>{{ queue.motivo_devolucion }}</td>
                 <td>{{ queue.fecha_devolucion }}</td>
-                <td>{{ queue.producto }}</td>
-
-                <td>
-                {% if queue.is_active == True %}
-                <a href="#" class="btn btn-success btn-circle btn-sm">
-                    <i class="fas fa-check"></i>
-                </a>
-                {% else %}
-                <a href="#" class="btn btn-warning btn-circle btn-sm">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </a>
-                {% endif %}
-                </td>
-                <td>
-                    {% for f in queue.roles %}
-                        {{ f }}
-                    {% endfor %}
-                </td>
-
-                <td>
-
-                {% if queue.is_active == False %}
-                <a href="{% url 'activar_devolucion_get' id=queue.id %}" class="btn btn-success btn-icon-split">
-                    <span class="icon text-white-50">
-                        <i class="fas fa-check"></i>
-                    </span>
-                    <span class="text">Activar</span>
-                </a>
-                {% else %}
-                <a href="{% url 'desactivar_devolucion_get' id=queue.id %}" class="btn btn-danger btn-icon-split">
-                    <span class="icon text-white-50">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </span>
-                    <span class="text">Desactivar</span>
-                </a>
-                {% endif %}
-
-                </td>
+                <td>{{ queue.producto.descripcion }}</td>
+                <td>{{ queue.cantidad }}</td>
+                <td>{{ queue.monto_devolucion }}</td>
 
             </tr>
         {% endif %}

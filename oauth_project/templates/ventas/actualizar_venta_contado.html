@@ -1,0 +1,236 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+    <script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+        {
+            "label": "Cliente",
+            "disabled": true,
+            "widget": "choicesjs",
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "disabled": false,
+            "dataSrc": "url",
+            "data": {
+                "url": "http://{{ IP_SERVER }}:8000/api/clientes/",
+                "headers": [
+                    {
+                        "key": "",
+                        "value": ""
+                    }
+                ]
+            },
+            "valueProperty": "id",
+            "dataType": "Object",
+            "template": '{% verbatim %} {{item.id}} - {{ item.nombre }} {% endverbatim %}',
+            "key": "cliente",
+            "type": "select",
+            "input": true,
+            "defaultValue": {{ venta.cliente.id|default_if_none:"" }}
+        },
+        {
+            "disabled": true,
+                    "label": "Fecha de Venta",
+                    "applyMaskOn": "change",
+                    "tableView": true,
+                    "key": "fecha_venta",
+                    "type": "textfield",
+                    "input": true,
+                    "defaultValue": '{{ venta.fecha_venta|default_if_none:"" }}'
+                },
+             {
+                    "label": "Tipo de Venta",
+                    "applyMaskOn": "change",
+                    "tableView": true,
+                    "key": "tipo_venta",
+                    "type": "textfield",
+                    "disabled": true,
+                    "defaultValue": "CONTADO",
+                    "input": true
+                },
+         {
+            "label": "Data Grid",
+            "reorder": false,
+            "addAnotherPosition": "bottom",
+            "layoutFixed": true,
+            "enableRowGroups": false,
+            "initEmpty": false,
+            "tableView": true,
+            "key": "detalles_venta",
+            "type": "datagrid",
+            "disableAddingRemovingRows": true,
+            "input": true,
+            "defaultValue": {{ detalles|safe }},
+            "components": [
+                    {
+                    "label": "COD",
+                    "applyMaskOn": "change",
+                    "tableView": true,
+                    "disabled": true,
+                    "key": "id_detalle_venta",
+                    "type": "textfield",
+                    "input": true
+                    },
+                    {
+                        "label": "Producto",
+                        "widget": "choicesjs",
+                        "tableView": true,
+                        "disabled": true,
+                        "validate": {
+                            "required": true
+                        },
+                        "dataSrc": "url",
+                        "data": {
+                            "url": "http://{{ IP_SERVER  }}:8000/api/productos-activos/",
+                            "headers": [
+                                {
+                                    "key": "",
+                                    "value": ""
+                                }
+                            ]
+                        },
+                        "valueProperty": "id",
+                        "dataType": "Object",
+                        "template": '{% verbatim %} {{ item.descripcion }} {% endverbatim %}',
+                        "key": "producto",
+                        "type": "select",
+                        "input": true,
+                    },
+                    {
+                        "label": "Cantidad",
+                        "disabled": true,
+                        "applyMaskOn": "change",
+                        "tableView": true,
+                        "validate": {
+                            "required": true
+                        },
+                        "key": "cantidad",
+                        "type": "textfield",
+                        "input": true
+                    },
+                    {
+                        "label": "Precio Unit.",
+                        "widget": "choicesjs",
+                        "tableView": true,
+                        "validate": {
+                            "required": true
+                        },
+                        "dataSrc": "url",
+                        "data": {
+                            "url": "http://{{ IP_SERVER  }}:8000/api/productos-activos/{% verbatim %}{{row.producto}}{% endverbatim %}",
+                            "headers": [
+                                {
+                                    "key": "",
+                                    "value": ""
+                                }
+                            ]
+                        },
+                        "refreshOn": "detalles_venta.producto",
+                        "clearOnRefresh": true,
+                        "valueProperty": "id",
+                        "selectValues": "precios",
+                        "template": '{% verbatim %} {{item.precio}} $ {% endverbatim %}',
+                        "dataType": "Number",
+                        "key": "precio_unitario",
+                        "type": "select",
+                        "input": true,
+                        "conditional": {
+                            "show": false,
+                            "when": "especial",
+                            "eq": "true"
+                        },
+                    },
+                    {
+                        "label": "Precio Especial",
+                        "tableView": true,
+                        "key": "precioEspecial",
+                        "type": "textfield",
+                        "input": true,
+                        "conditional": {
+                            "show": true,
+                            "when": "especial",
+                            "eq": "true"
+                        },
+                        "refreshOn": "especial"
+                    },
+                    {
+                        "label": "Estado Autorizacion",
+                        "tableView": true,
+                        "key": "estadoAutorizacion",
+                        "type": "textfield",
+                        "input": true,
+                        "conditional": {
+                            "show": true,
+                            "when": "especial",
+                            "eq": "true"
+                        },
+                        "disabled": true,
+                        "defaultValue": "PENDIENTE",
+                        "refreshOn": "especial"
+                    },
+                    {
+                        "label": "Especial",
+                        "tableView": false,
+                        "key": "especial",
+                        "disabled": true,
+                        "type": "checkbox",
+                        "input": true,
+                        "defaultValue": false
+                    },
+                    {
+                        "disabled": true,
+                        "label": "Subtotal",
+                        "validate": {
+                            "required": true
+                        },
+                        "applyMaskOn": "change",
+                        "tableView": true,
+                        "key": "precioTotal",
+                        "type": "number",
+                        "input": true,
+                        "calculateValue": "try{if(row.especial === 'true' ) {value = row.cantidad * row.precioEspecial}else{ value = row.cantidad * row.precio_unitario} }catch(error){value=''}"
+                    }
+            ]
+        },
+          {
+            "label": "+ Actualizar Venta con precios especiales",
+            "action": "event",
+            "event": "evento-enviar-form",
+            "showValidations": true,
+            "disableOnInvalid": true,
+            "tableView": false,
+            "key": "submit",
+            "type": "button",
+            "input": true
+        }
+
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'actualizar_venta_contado_post' %}";
+};
+    </script>
+    <div class="col-sm">
+
+        <h2>ACTUALIZAR PRECIOS ESPECIALES RECHAZADOS</h2>
+        <div class="alert alert-warning" role="alert">
+            Una vez actualizado el formulario, los detalles 'RECHAZADOS' pasarán a estado de 'PENDIENTE DE REVISIÓN' nuevamente.
+        </div>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+    <br>
+    <br>
+    <a class="btn btn-danger" href="/roles-sistema">Volver a Lista de Usuarios</a>
+    <br>
+    <br>
+{% endblock %}

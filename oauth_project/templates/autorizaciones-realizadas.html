@@ -1,0 +1,56 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+    <h1>Autorizaciones pendientes del Sistema</h1>
+    <br>
+    <br>
+    <div class="text-center">
+
+    <table id="tabla-potenciada" class="table">
+      <thead>
+        <tr>
+          <th scope="col">COD Detalle</th>
+          <th scope="col">Producto</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Precio Unit.</th>
+          <th scope="col">Precio Subtotal</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Fecha Autorizado</th>
+          <th scope="col">User Autorizador</th>
+
+        </tr>
+      </thead>
+         <tbody>
+         {% for queue in data.autorizaciones_realizadas %}
+        {% if not queue.orderDate %}
+            <tr>
+                <td>{{ queue.id }}</td>
+                <td>{{ queue.producto.descripcion }}</td>
+                <td>{{ queue.cantidad }}</td>
+                <td>{{ queue.precio_unitario }} $</td>
+                <td>{{ queue.precio_total }}</td>
+                <td>
+                 {% if queue.estado_autorizacion.id == 2 %}
+                <span style="color: green;"><strong>AUTORIZADO</strong></span>
+                {% elif queue.estado_autorizacion.id == 3 %}
+                    <span style="color: red;">RECHAZADO</span>
+                {% else %}
+                    {{ queue.venta.fecha_venta }}
+                {% endif %}
+                </td>
+
+            <td>{{ queue.fecha_autorizacion }}</td>
+            <td>{{ queue.usuario_autorizador }}</td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+            {% for queue in lista_permisos %}
+            {% if not queue.orderDate %}
+                <tr><td>{{ queue.id }}</td><td>{{ queue.descripcion }}</td></tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+    </table>
+</div>
+{% endblock %}
+
+

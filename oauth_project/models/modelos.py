@@ -582,13 +582,28 @@ class RolUsuario(models.Model):
     rol = models.ForeignKey(RolesSistema, on_delete=models.CASCADE)
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
+class Categoria (models.Model):
+    nombre = models.TextField(blank=False)
+    is_activo = models.BooleanField(default=True)
+
+
+class EstadoAutorizacion(models.Model):
+    nombre = models.TextField(blank=False)
 class Producto(models.Model):
     descripcion = models.TextField(blank=False)
-    precio_minorista = models.IntegerField(blank=False)
-    precio_intermedio = models.IntegerField(blank=False)
-    precio_mayorista = models.IntegerField(blank=False)
     cantidad_stock = models.IntegerField(blank=False)
     is_active = models.BooleanField(blank=False, default=True)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    def obtener_precios(self):
+        print('obtener precios')
+        precios = PrecioProducto.objects.filter(producto=self)
+        precios_por_producto = [
+
+            {"id": precio.id ,"nombre": precio.nombre, "precio": precio.precio}
+            for precio in precios
+        ]
+        return precios_por_producto
+
 
 class Cliente(models.Model):
     nombre = models.TextField(blank=False)
@@ -612,6 +627,31 @@ class Venta(models.Model):
     monto_total = models.IntegerField()
     pagado = models.BooleanField()
 
+
+
+
+class Devolucion(models.Model):
+    motivo_devolucion= models.TextField(blank=False)
+    fecha_devolucion = models.DateTimeField(null=False)
+    is_activo = models.BooleanField(default=True)
+    producto = models.ForeignKey(Producto, null=False, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, null=False, on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
+    venta = models.ForeignKey(Venta, null=False, on_delete=models.CASCADE)
+    monto_devolucion = models.IntegerField()
+
+
+
+class TipoPago (models.Model):
+    nombre = models.TextField(blank=False)
+    is_activo = models.BooleanField(default=True)
+
+class PrecioProducto (models.Model):
+    nombre = models.TextField(blank=False)
+    precio = models.DecimalField(max_digits=8, decimal_places=2)
+    producto = models.ForeignKey(Producto, null=False, on_delete=models.CASCADE)
+
+
 class DetalleVenta(models.Model):
     producto = models.ForeignKey(Producto, null=False, on_delete=models.CASCADE)
     venta = models.ForeignKey(Venta, null=False, on_delete=models.CASCADE)
@@ -619,19 +659,40 @@ class DetalleVenta(models.Model):
     precio_unitario = models.IntegerField()
     precio_total = models.IntegerField()
     is_precio_especial = models.BooleanField()
+    estado_autorizacion = models.ForeignKey(EstadoAutorizacion, null=False, on_delete=models.CASCADE)
 
-class Devolucion(models.Model):
-    motivo_devolucion: models.TextField(blank=False)
-    fecha_devolucion = models.DateTimeField(null=False)
-    is_activo = models.BooleanField(default=True)
+class AutorizacionesRealizadas(models.Model):
+    usuario_autorizador = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     producto = models.ForeignKey(Producto, null=False, on_delete=models.CASCADE)
-    cliente = models.ForeignKey(Cliente, null=False, on_delete=models.CASCADE)
+    venta = models.ForeignKey(Venta, null=False, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
+    precio_unitario = models.IntegerField()
+    precio_total = models.IntegerField()
+    is_precio_especial = models.BooleanField()
+    estado_autorizacion = models.ForeignKey(EstadoAutorizacion, null=False, on_delete=models.CASCADE)
+    fecha_autorizacion = models.DateTimeField(null=False)
 
-class Categoria (models.Model):
-    nombre = models.TextField(blank=False)
-    is_activo = models.BooleanField(default=True)
+    def generar_autorizacion(detalle_venta):
+        # Extrae los datos del detalle de venta
+        producto = detalle_venta.producto
+        venta = detalle_venta.venta
+        cantidad = detalle_venta.cantidad
+        precio_unitario = detalle_venta.precio_unitario
+        precio_total = detalle_venta.precio_total
+        is_precio_especial = detalle_venta.is_precio_especial
+        estado_autorizacion = detalle_venta.estado_autorizacion
 
-class TipoPago (models.Model):
-    nombre = models.TextField(blank=False)
-    is_activo = models.BooleanField(default=True)
+        # Crea una nueva instancia de AutorizacionesRealizadas
+        autorizacion = AutorizacionesRealizadas(
+            #usuario_autorizador=venta.usuario,  # Reemplaza con el usuario autorizador adecuado
+            producto=producto,
+            venta=venta,
+            cantidad=cantidad,
+            precio_unitario=precio_unitario,
+            precio_total=precio_total,
+            is_precio_especial=is_precio_especial,
+            estado_autorizacion=estado_autorizacion
+        )
+
+        # Guarda la instancia en la base de datos
+        return autorizacion

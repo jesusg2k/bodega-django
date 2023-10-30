@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from oauth_project.models.modelos import Permiso, Proyecto, RolProyecto, Miembro, TipoUserStory, Estado, TipoVenta, \
-    Cliente, Producto
+    Cliente, Producto, Venta, DetalleVenta, Categoria
 from django.contrib.auth.models import User
 
 
@@ -33,13 +33,31 @@ class ProductoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_precios(self, obj):
-        return {
-            obj.precio_minorista:obj.precio_minorista,
-            obj.precio_mayorista:obj.precio_mayorista,
-            obj.precio_intermedio:obj.precio_intermedio
-        }
+        return obj.obtener_precios()
         #return [obj.precio_minorista, obj.precio_mayorista, obj.precio_intermedio]
 
+
+class DetalleVentaSerializer(serializers.ModelSerializer):
+    nombre = serializers.SerializerMethodField()
+    class Meta:
+        model = DetalleVenta
+        fields = '__all__'
+
+    def get_nombre(self, obj):
+        # Aquí debes implementar la lógica para obtener el nombre del producto
+        return obj.producto.descripcion
+
+class CategoriaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categoria
+        fields = '__all__'
+
+class VentaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Venta
+        fields = '__all__'
+
+        #return [obj.precio_minorista, obj.precio_mayorista, obj.precio_intermedio]
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

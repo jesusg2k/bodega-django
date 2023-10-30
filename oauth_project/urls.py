@@ -12,7 +12,8 @@ from . import views
 
 
 from .views import create_task, get_list_users, vista_form_render, view_mis_proyectos, \
-    view_modificar_proyecto, view_crear_proyecto, asignar_usuario_user_story, asignar_usuario_user_story_sprintbackog
+    view_modificar_proyecto, view_crear_proyecto, asignar_usuario_user_story, asignar_usuario_user_story_sprintbackog, \
+    VentaDetallesView
 
 urlpatterns = [
     path('test3/', LoginView.as_view(template_name="sso.html"), name='sso'),
@@ -122,16 +123,23 @@ urlpatterns = [
     path('actualizar-estado/<int:id_user_story>', views.actualizar_estado_us, name='actualizar-estado-us'),
     path('actualizar_rol_usuario/<int:id_usuario>', views.actualizar_rol_usuario, name='actualizar_rol_usuario'),
     path('actualizar_producto/<int:id>', views.actualizar_producto, name='actualizar_producto'),
+    path('lista_precios/<int:id>', views.ver_lista_precios, name='ver_lista_precios'),
     path('actualizar_cliente/<int:id>', views.actualizar_cliente, name='actualizar_cliente'),
     path('actualizar_categoria/<int:id>', views.actualizar_categoria, name='actualizar_categoria_get'),
     path('usuarios/crear-usuario-sistema', views.form_crear_usuario_sistema, name='crear-form-usuario-sistema'),
     path('categorais/crear-categoria', views.form_crear_categoria, name='crear-form-categoria'),
+    path('lista_precios/crear_precio/<int:id>', views.form_crear_precio, name='agregar_precio_form'),
+    path('lista_precios/modificar/<int:id>', views.form_modificar_precio, name='modificar_precio_get'),
     path('tipospago/crear-tipo-pago', views.form_crear_tipo_pago, name='crear-form-tipo-pago'),
     path('actualizar_tipopago/<int:id>', views.actualizar_tipo_pago, name='actualizar_tipo_pago_get'),
     path('devoluciones/crear', views.form_devoluciones_crear, name='devoluciones_crear'),
     path('ventas/crear-venta', views.crear_form_venta, name='crear_form_venta'),
+    path('ventas/crear-venta/contado', views.crear_form_venta_contado, name='crear_form_venta_contado'),
+    path('actualizar_venta_contado/<int:id>/', views.actualizar_venta_contado, name='actualizar_venta_contado'),
+    path('ver_venta_para_concretar/<int:id>/', views.ver_venta_para_concretar, name='ver_venta_para_concretar'),
     path('productos/crear-producto', views.form_crear_producto, name='form_crear_producto'),
     path('clientes/crear-cliente', views.form_crear_cliente, name='form_crear_cliente'),
+    path('venta-detalles/<int:id>/', VentaDetallesView.as_view(), name='venta-detalles'),
     path('<filename>/', views.html),
     path('', views.index)
 ]

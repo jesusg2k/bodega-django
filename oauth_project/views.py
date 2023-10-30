@@ -1,4 +1,6 @@
 import datetime
+
+from rest_framework import generics
 from django.utils import timezone
 
 
@@ -19,11 +21,13 @@ from django.template import loader
 from django.template.defaultfilters import length
 from django.urls import reverse
 from django.utils.decorators import method_decorator
+from rest_framework.response import Response
 from rest_framework import viewsets
 
 from oauth_project.serializers import PermisoSerializer, UserSerializer, ProyectoSerializer, RolProyectoSerializer, \
     MiembroSerializer, TipoUserStorySerializer, EstadoSerializer, TipoVentaSerializer, ClienteSerializer, \
-    ProductoSerializer
+    ProductoSerializer, VentaSerializer, DetalleVentaSerializer, CategoriaSerializer
+from . import settings
 
 django.setup()
 
@@ -31,7 +35,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 
 from oauth_project.models.modelos import TipoUserStory, PermisoRol, UserStory, Sprint, Profile, Integrante, RolUsuario, \
-    RolesSistema, Producto, Cliente, Venta, TipoVenta, Categoria, TipoPago
+    RolesSistema, Producto, Cliente, Venta, TipoVenta, Categoria, TipoPago, Devolucion, DetalleVenta, PrecioProducto, \
+    EstadoAutorizacion, AutorizacionesRealizadas
 from oauth_project.models.modelos import TipoUserStory, PermisoRol, UserStory, Sprint, Profile, Estado, Integrante
 from oauth_project.models.modelos import RolProyecto, Equipo, Miembro
 from django.http import HttpResponse
@@ -144,6 +149,29 @@ def getDataPersonalizada(request, filename):
         print(lista_proyectos)
 
         print(data)
+    if (filename == 'ventas-pendientes-modificacion'):
+        ventas_rechazadas = Venta.objects.filter(detalleventa__estado_autorizacion=3).distinct()
+        ventas_aceptadas = Venta.objects.annotate(
+            total_detalles=Count('detalleventa', filter=Q(detalleventa__estado_autorizacion=2))
+        ).filter(total_detalles=Count('detalleventa'), detalleventa__estado_autorizacion=2)
+        ventas = []
+        for v in ventas_aceptadas:
+            v.obs_estado = 'AUTORIZACIONES ACEPTADAS'
+            if(v.estado.id == 5):
+                ventas.append(v)
+        for v in ventas_rechazadas:
+            v.obs_estado = 'AUTORIZACIONES RECHAZADAS'
+            ventas.append(v)
+        data['ventas'] = ventas
+    if (filename == 'autorizaciones-pendientes'):
+        detalles = DetalleVenta.objects.all().filter(estado_autorizacion=1)
+        data['autorizaciones_pendientes'] = detalles
+    if (filename == 'autorizaciones-realizadas'):
+        detalles = AutorizacionesRealizadas.objects.filter(Q(estado_autorizacion=2) | Q(estado_autorizacion=3))
+        data['autorizaciones_realizadas'] = detalles
+    if (filename == 'devoluciones'):
+        devoluciones = Devolucion.objects.all().order_by('id')
+        data["devoluciones"] = devoluciones
     if (filename == 'categorias'):
         categorias = Categoria.objects.all().order_by('id')
         data["categorias"] = categorias
@@ -783,6 +811,44 @@ class ProductoActivosViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.filter(is_active=True, cantidad_stock__gte=1).order_by('id')
     print(queryset)
     serializer_class = ProductoSerializer
+
+
+class VentaDetallesView(generics.RetrieveAPIView):
+    queryset = Venta.objects.all()
+    serializer_class = VentaSerializer
+    lookup_field = 'id'  # Esto define el campo que se usará como ID en la URL
+
+    def retrieve(self, request, id=None):
+        venta = self.get_object()
+        detalles = DetalleVenta.objects.filter(venta=venta)
+        detalles_serializer = DetalleVentaSerializer(detalles, many=True)
+        return Response(detalles_serializer.data)
+
+class VentasViewSet(viewsets.ModelViewSet):
+    """
+                    Clase UsuarioViewSet::
+
+                            class UsuarioViewSet(viewsets.ModelViewSet):
+
+                    Es un metodo de serializacion utiliazdo por django rest framework
+    """
+    queryset = Venta.objects.filter().order_by('id')
+    print(queryset)
+    serializer_class = VentaSerializer
+    lookup_field = 'id'  # Esto define el campo que se usará como ID en la URL
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+    """
+                    Clase UsuarioViewSet::
+
+                            class UsuarioViewSet(viewsets.ModelViewSet):
+
+                    Es un metodo de serializacion utiliazdo por django rest framework
+    """
+    queryset = Categoria.objects.filter().order_by('id')
+    print(queryset)
+    serializer_class = CategoriaSerializer
+    lookup_field = 'id'  # Esto define el campo que se usará como ID en la URL
 
 
 class EstadoViewSet(viewsets.ModelViewSet):
@@ -2644,10 +2710,21 @@ def actualizar_producto(request, id):
     data_msg = cargar_msg_session(request)
     return render(request, "producto/modificar-producto.html",
                   {
+                   "IP_SERVER": settings.IP_SERVER,
                    "producto": producto, "id_producto": id,
                    "datamsg": data_msg}
                   )
 
+def ver_lista_precios(request, id):
+    print("El id del producto es -----> " + str(id))
+    producto = Producto.objects.get(id=id)
+    data_msg = cargar_msg_session(request)
+    return render(request, "producto/lista_precios.html",
+                  {
+                   "producto": producto,"precios": producto.obtener_precios(),
+                   "id_producto": id,
+                   "datamsg": data_msg}
+                  )
 
 def actualizar_rol_usuario(request, id_usuario):
     print("El id del usuario es -----> " + str(id_usuario))
@@ -2681,6 +2758,25 @@ def form_crear_categoria(request):
                   {
                    "datamsg": data_msg})
 
+def form_crear_precio(request, id):
+    data_msg = cargar_msg_session(request)
+    producto = Producto.objects.get(id=id)
+    return render(request, "producto/crear-precio.html",
+                  {
+                      "producto": producto,
+                      "id_producto": producto,
+                   "datamsg": data_msg})
+
+def form_modificar_precio(request, id):
+    data_msg = cargar_msg_session(request)
+    precio = PrecioProducto.objects.get(id=id)
+    return render(request, "producto/modificar-precio.html",
+                  {
+                      "precio": precio,
+                      "producto": precio.producto,
+                      "id_producto": precio.producto.id,
+                      "datamsg": data_msg})
+
 def form_crear_tipo_pago(request):
     data_msg = cargar_msg_session(request)
     return render(request, "tipo_pago/crear_tipo_pago.html",
@@ -2697,12 +2793,96 @@ def crear_form_venta(request):
     data_msg = cargar_msg_session(request)
     return render(request, "ventas/crear-ventas.html",
                   {
+                      "IP_SERVER": settings.IP_SERVER,
+                   "datamsg": data_msg})
+
+def crear_form_venta_contado(request):
+    data_msg = cargar_msg_session(request)
+    return render(request, "ventas/crear-venta-contado.html",
+                  {
+                      "IP_SERVER": settings.IP_SERVER,
+                   "datamsg": data_msg})
+
+def actualizar_venta_contado(request, id):
+    venta = Venta.objects.all().get(id=id)
+    data_msg = cargar_msg_session(request)
+    """defaultValue": [
+        {
+            "textField": "1",
+            "textField1": "3"
+        },
+        {
+            "textField": "2",
+            "textField1": "3"
+        }
+    ],"""
+    detalles = DetalleVenta.objects.all().filter(venta=venta)
+    values = []
+    for d in detalles:
+        obj = {}
+        obj['id_detalle_venta'] = d.id
+        obj['producto'] = d.producto.id
+        obj['cantidad'] = d.cantidad
+        obj['precio_unitario'] = d.precio_unitario
+        obj['precioEspecial'] = d.precio_unitario
+        if(d.is_precio_especial==True):
+            obj['especial'] = 'true'
+        else:
+            obj['especial'] = 'false'
+        obj['precioTotal'] = d.precio_total
+        obj['estadoAutorizacion'] = d.estado_autorizacion.nombre
+        if (d.is_precio_especial == True and d.estado_autorizacion.id==3):
+            values.append(obj)
+    return render(request, "ventas/actualizar_venta_contado.html",
+                  {
+                   "detalles": values,
+                   "venta": venta,
+                   "IP_SERVER": settings.IP_SERVER,
+                   "datamsg": data_msg})
+
+
+def ver_venta_para_concretar(request, id):
+    venta = Venta.objects.all().get(id=id)
+    data_msg = cargar_msg_session(request)
+    """defaultValue": [
+        {
+            "textField": "1",
+            "textField1": "3"
+        },
+        {
+            "textField": "2",
+            "textField1": "3"
+        }
+    ],"""
+    detalles = DetalleVenta.objects.all().filter(venta=venta)
+    values = []
+    for d in detalles:
+        obj = {}
+        obj['id_detalle_venta'] = d.id
+        obj['producto'] = d.producto.id
+        obj['cantidad'] = d.cantidad
+        obj['precio_unitario'] = d.precio_unitario
+        obj['precioEspecial'] = d.precio_unitario
+        if(d.is_precio_especial==True):
+            obj['especial'] = 'true'
+        else:
+            obj['especial'] = 'false'
+        obj['precioTotal'] = d.precio_total
+        obj['estadoAutorizacion'] = d.estado_autorizacion.nombre
+
+        values.append(obj)
+    return render(request, "ventas/ver_venta_para_concretar.html",
+                  {
+                   "detalles": values,
+                   "venta": venta,
+                   "IP_SERVER": settings.IP_SERVER,
                    "datamsg": data_msg})
 
 def form_crear_producto(request):
     data_msg = cargar_msg_session(request)
     return render(request, "producto/crear-producto.html",
                   {
+                    "IP_SERVER": settings.IP_SERVER,
                    "datamsg": data_msg})
 
 def form_crear_cliente(request):

@@ -34,48 +34,31 @@
                 "required": "Nombre del producto de Rol es un campo obligatorio."
             },
         },
-         {
-            "label": "Precio Minorista",
-            "tableView": true,
-            "key": "precio_minorista",
-            "type": "number",
-            "input": true,
-            "validate": {
-                "required": true
-            },
-             "defaultValue": '{{ producto.precio_minorista|default_if_none:""}}',
-            "errors": {
-                "required": "Precio Minorista es un campo obligatorio."
-            },
-        },
         {
-            "label": "Precio Intermedio",
-            "tableView": true,
-            "key": "precio_intermedio",
-            "type": "number",
-            "input": true,
-            "validate": {
-                "required": true
-            },
-            "defaultValue": '{{ producto.precio_intermedio|default_if_none:""}}',
-            "errors": {
-                "required": "Precio Intermedio es un campo obligatorio."
-            },
-        },
-        {
-            "label": "Precio Mayorista",
-            "tableView": true,
-            "key": "precio_mayorista",
-            "type": "number",
-            "input": true,
-            "validate": {
-                "required": true
-            },
-            "defaultValue": '{{ producto.precio_mayorista|default_if_none:""}}',
-            "errors": {
-                "required": "Precio Mayorista es un campo obligatorio."
-            },
-        },
+                        "label": "Categoria",
+                        "widget": "choicesjs",
+                        "tableView": true,
+                        "validate": {
+                            "required": true
+                        },
+                        "dataSrc": "url",
+                        "data": {
+                            "url": "http://{{ IP_SERVER  }}:8000/api/categorias/",
+                            "headers": [
+                                {
+                                    "key": "",
+                                    "value": ""
+                                }
+                            ]
+                        },
+                        "valueProperty": "id",
+                        "dataType": "Object",
+                        "template": '{% verbatim %} {{item.id}} - {{ item.nombre }} {% endverbatim %}',
+                        "key": "id_categoria",
+                        "type": "select",
+                        "input": true,
+                        "defaultValue": {{ producto.categoria.id|default_if_none:""}}
+          },
         {
             "label": "Cantidad Stock",
             "tableView": true,

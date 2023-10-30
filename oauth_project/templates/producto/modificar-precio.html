@@ -1,0 +1,114 @@
+{% extends 'parts/template-master.html' %}
+{% block content %}
+    <script type="text/javascript">
+      window.onload = function() {
+    Formio.icons = 'fontawesome';
+    Formio.createForm(document.getElementById('formio'), {
+    components: [
+         {
+            "label": "COD Producto",
+            "tableView": true,
+            "key": "id_producto",
+            "type": "textfield",
+            "input": true,
+            "disabled": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Cod. Producto es un campo obligatorio."
+            },
+            "defaultValue": '{{ producto.id }}'
+        },
+         {
+            "label": "Descripción Producto",
+            "tableView": true,
+            "key": "nombre_producto",
+            "type": "textfield",
+            "input": true,
+            "disabled": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Nombre Producto es un campo obligatorio."
+            },
+             "defaultValue": '{{ producto.descripcion }}'
+        },
+        {
+            "label": "COD. Precio",
+            "tableView": true,
+            "key": "id_precio",
+            "disabled": true,
+            "type": "textfield",
+            "input": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "ID del precio es un campo obligatorio."
+            },
+            "defaultValue": '{{ precio.id }}'
+        },
+         {
+            "label": "Nombre del Precio",
+            "tableView": true,
+            "key": "nombre",
+            "type": "textfield",
+            "input": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Nombre del precio es un campo obligatorio."
+            },
+            "defaultValue": '{{ precio.nombre }}'
+        },
+        {
+            "label": "Precio",
+            "tableView": true,
+            "key": "precio",
+            "type": "textfield",
+            "input": true,
+            "validate": {
+                "required": true
+            },
+            "errors": {
+                "required": "Precio es un campo obligatorio."
+            },
+            "defaultValue": '{{ precio.precio }}'
+        },
+          {
+            "label": "+ Actualizar Precio",
+            "action": "event",
+            "event": "evento-enviar-form",
+            "showValidations": true,
+            "disableOnInvalid": true,
+            "tableView": false,
+            "key": "submit",
+            "type": "button",
+            "input": true
+        }
+
+  ]
+}).then(function(form) {
+  form.on('evento-enviar-form', function(submission) {
+    var json = JSON.stringify(form.data);
+    document.getElementById('guardar_json_txt').value = json;
+    document.getElementById('btn_aceptar_form').click();
+  });
+});
+    document.getElementById('form-django').action = "{% url 'modificar_precio_producto_post' id=producto.id %}";
+};
+    </script>
+    <div class="col-sm">
+        <h2>Agregar precio nuevo a {{ producto. }}</h2>
+        <form id="formio"></form>
+        {% include "parts/form.generic.html" %}
+    </div>
+    <br>
+    <br>
+    <a class="btn btn-danger" href="/lista_precios/{{ producto.id}}">Volver a Lista de Precios</a>
+    <br>
+    <br>
+{% endblock %}
