@@ -1,7 +1,7 @@
 #!/bin/sh
 
 sudo -i -u postgres
-
+#123
 admin
 
 
